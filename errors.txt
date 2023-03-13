@@ -1,0 +1,747 @@
+[0/5] Performing build step for 'lagom'
+[1/32] Building CXX object Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o
+FAILED: Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o 
+/usr/bin/ccache /usr/bin/g++ -DLibCore_EXPORTS -I/home/d4gobert/devel/serenity/Meta/Lagom/../.. -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland/Libraries -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland/Services -I/home/d4gobert/devel/serenity/Build/lagom -I/home/d4gobert/devel/serenity/Build/lagom/Userland/Libraries -I/home/d4gobert/devel/serenity/Build/lagom/Userland/Services -std=c++20 -fPIC -Wall -Wextra -Werror -Wno-implicit-const-int-float-conversion -Wno-literal-suffix -Wno-maybe-uninitialized -Wno-unknown-warning-option -Wno-unused-command-line-argument -fsigned-char -fno-exceptions -fdiagnostics-color=always -g1 -O2 -fno-semantic-interposition -fPIC -Wno-expansion-to-defined -MD -MT Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o -MF Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o.d -o Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o -c /home/d4gobert/devel/serenity/AK/URL.cpp
+/home/d4gobert/devel/serenity/AK/URL.cpp: In member function ‘bool AK::URL::compute_validity() const’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:112:32: error: ‘const class AK::String’ has no member named ‘length’
+  112 |             if (m_data_payload.length() % 4 != 0)
+      |                                ^~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:114:35: error: ‘begin’ was not declared in this scope
+  114 |             for (auto character : m_data_payload) {
+      |                                   ^~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:114:35: note: suggested alternatives:
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Vector.h:22,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:11,
+                 from /home/d4gobert/devel/serenity/AK/URL.cpp:10:
+/usr/include/c++/12/initializer_list:90:5: note:   ‘std::begin’
+   90 |     begin(initializer_list<_Tp> __ils) noexcept
+      |     ^~~~~
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Vector.h:16:
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/ReverseIterator.h:98:6: note:   ‘AK::ReverseWrapper::begin’
+   98 | auto begin(ReverseWrapper<Container> wrapper) { return wrapper.container.rbegin(); }
+      |      ^~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:114:35: error: ‘end’ was not declared in this scope
+  114 |             for (auto character : m_data_payload) {
+      |                                   ^~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:114:35: note: suggested alternatives:
+/usr/include/c++/12/initializer_list:101:5: note:   ‘std::end’
+  101 |     end(initializer_list<_Tp> __ils) noexcept
+      |     ^~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/ReverseIterator.h:101:6: note:   ‘AK::ReverseWrapper::end’
+  101 | auto end(ReverseWrapper<Container> wrapper) { return wrapper.container.rend(); }
+      |      ^~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:133:38: error: ‘const class AK::String’ has no member named ‘is_null’
+  133 |     if (m_scheme == "file" && m_host.is_null())
+      |                                      ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: In static member function ‘static AK::URL AK::URL::create_with_file_scheme(const AK::String&, const AK::String&, const AK::String&)’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:165:34: error: no matching function for call to ‘AK::LexicalPath::LexicalPath(const AK::String&)’
+  165 |     LexicalPath lexical_path(path);
+      |                                  ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:22:14: note: candidate: ‘AK::LexicalPath::LexicalPath(AK::DeprecatedString)’
+   22 |     explicit LexicalPath(DeprecatedString);
+      |              ^~~~~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:22:26: note:   no known conversion for argument 1 from ‘const AK::String’ to ‘AK::DeprecatedString’
+   22 |     explicit LexicalPath(DeprecatedString);
+      |                          ^~~~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:20:7: note: candidate: ‘AK::LexicalPath::LexicalPath(const AK::LexicalPath&)’
+   20 | class LexicalPath {
+      |       ^~~~~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:20:7: note:   no known conversion for argument 1 from ‘const AK::String’ to ‘const AK::LexicalPath&’
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:20:7: note: candidate: ‘AK::LexicalPath::LexicalPath(AK::LexicalPath&&)’
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:20:7: note:   no known conversion for argument 1 from ‘const AK::String’ to ‘AK::LexicalPath&&’
+/home/d4gobert/devel/serenity/AK/URL.cpp:170:20: error: cannot convert ‘const char [5]’ to ‘AK::String’
+  170 |     url.set_scheme("file");
+      |                    ^~~~~~
+      |                    |
+      |                    const char [5]
+/home/d4gobert/devel/serenity/AK/URL.cpp:51:29: note:   initializing argument 1 of ‘void AK::URL::set_scheme(AK::String)’
+   51 | void URL::set_scheme(String scheme)
+      |                      ~~~~~~~^~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:173:27: error: ‘const class AK::String’ has no member named ‘is_null’
+  173 |     url.set_host(hostname.is_null() || hostname == "localhost" ? String::empty() : hostname);
+      |                           ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:173:74: error: ‘empty’ is not a member of ‘AK::String’
+  173 |     url.set_host(hostname.is_null() || hostname == "localhost" ? String::empty() : hostname);
+      |                                                                          ^~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:174:37: error: cannot convert ‘Vector<AK::DeprecatedString>’ to ‘Vector<AK::String>’
+  174 |     url.set_paths(lexical_path.parts());
+      |                   ~~~~~~~~~~~~~~~~~~^~
+      |                                     |
+      |                                     Vector<AK::DeprecatedString>
+/home/d4gobert/devel/serenity/AK/URL.cpp:85:36: note:   initializing argument 1 of ‘void AK::URL::set_paths(AK::Vector<AK::String>)’
+   85 | void URL::set_paths(Vector<String> paths)
+      |                     ~~~~~~~~~~~~~~~^~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:177:25: error: cannot convert ‘const char [1]’ to ‘AK::String’
+  177 |         url.append_path("");
+      |                         ^~
+      |                         |
+      |                         const char [1]
+In file included from /home/d4gobert/devel/serenity/AK/URL.cpp:12:
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:79:29: note:   initializing argument 1 of ‘void AK::URL::append_path(AK::String)’
+   79 |     void append_path(String path) { m_paths.append(move(path)); }
+      |                      ~~~~~~~^~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: In static member function ‘static AK::URL AK::URL::create_with_help_scheme(const AK::String&, const AK::String&, const AK::String&)’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:184:34: error: no matching function for call to ‘AK::LexicalPath::LexicalPath(const AK::String&)’
+  184 |     LexicalPath lexical_path(path);
+      |                                  ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:22:14: note: candidate: ‘AK::LexicalPath::LexicalPath(AK::DeprecatedString)’
+   22 |     explicit LexicalPath(DeprecatedString);
+      |              ^~~~~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:22:26: note:   no known conversion for argument 1 from ‘const AK::String’ to ‘AK::DeprecatedString’
+   22 |     explicit LexicalPath(DeprecatedString);
+      |                          ^~~~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:20:7: note: candidate: ‘AK::LexicalPath::LexicalPath(const AK::LexicalPath&)’
+   20 | class LexicalPath {
+      |       ^~~~~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:20:7: note:   no known conversion for argument 1 from ‘const AK::String’ to ‘const AK::LexicalPath&’
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:20:7: note: candidate: ‘AK::LexicalPath::LexicalPath(AK::LexicalPath&&)’
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:20:7: note:   no known conversion for argument 1 from ‘const AK::String’ to ‘AK::LexicalPath&&’
+/home/d4gobert/devel/serenity/AK/URL.cpp:187:20: error: cannot convert ‘const char [5]’ to ‘AK::String’
+  187 |     url.set_scheme("help");
+      |                    ^~~~~~
+      |                    |
+      |                    const char [5]
+/home/d4gobert/devel/serenity/AK/URL.cpp:51:29: note:   initializing argument 1 of ‘void AK::URL::set_scheme(AK::String)’
+   51 | void URL::set_scheme(String scheme)
+      |                      ~~~~~~~^~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:190:27: error: ‘const class AK::String’ has no member named ‘is_null’
+  190 |     url.set_host(hostname.is_null() || hostname == "localhost" ? String::empty() : hostname);
+      |                           ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:190:74: error: ‘empty’ is not a member of ‘AK::String’
+  190 |     url.set_host(hostname.is_null() || hostname == "localhost" ? String::empty() : hostname);
+      |                                                                          ^~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:191:37: error: cannot convert ‘Vector<AK::DeprecatedString>’ to ‘Vector<AK::String>’
+  191 |     url.set_paths(lexical_path.parts());
+      |                   ~~~~~~~~~~~~~~~~~~^~
+      |                                     |
+      |                                     Vector<AK::DeprecatedString>
+/home/d4gobert/devel/serenity/AK/URL.cpp:85:36: note:   initializing argument 1 of ‘void AK::URL::set_paths(AK::Vector<AK::String>)’
+   85 | void URL::set_paths(Vector<String> paths)
+      |                     ~~~~~~~~~~~~~~~^~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:194:25: error: cannot convert ‘const char [1]’ to ‘AK::String’
+  194 |         url.append_path("");
+      |                         ^~
+      |                         |
+      |                         const char [1]
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:79:29: note:   initializing argument 1 of ‘void AK::URL::append_path(AK::String)’
+   79 |     void append_path(String path) { m_paths.append(move(path)); }
+      |                      ~~~~~~~^~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: In static member function ‘static AK::URL AK::URL::create_with_url_or_path(const AK::String&)’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:205:51: error: cannot convert ‘const AK::String’ to ‘AK::DeprecatedString’
+  205 |     String path = LexicalPath::canonicalized_path(url_or_path);
+      |                                                   ^~~~~~~~~~~
+      |                                                   |
+      |                                                   const AK::String
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:42:62: note:   initializing argument 1 of ‘static AK::DeprecatedString AK::LexicalPath::canonicalized_path(AK::DeprecatedString)’
+   42 |     [[nodiscard]] static DeprecatedString canonicalized_path(DeprecatedString);
+      |                                                              ^~~~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: At global scope:
+/home/d4gobert/devel/serenity/AK/URL.cpp:209:14: error: default argument given for parameter 3 of ‘static AK::ErrorOr<AK::URL> AK::URL::create_with_data(AK::String, AK::String, bool)’ [-fpermissive]
+  209 | ErrorOr<URL> URL::create_with_data(String mime_type, String payload, bool is_base64 = false)
+      |              ^~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:103:25: note: previous specification in ‘static AK::ErrorOr<AK::URL> AK::URL::create_with_data(AK::String, AK::String, bool)’ here
+  103 |     static ErrorOr<URL> create_with_data(String mime_type, String payload, bool is_base64 = false);
+      |                         ^~~~~~~~~~~~~~~~
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Optional.h:12,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/StringView.h:13,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/CheckedFormatString.h:12,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Format.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/DeprecatedString.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:10:
+/home/d4gobert/devel/serenity/AK/URL.cpp: In static member function ‘static AK::ErrorOr<AK::URL> AK::URL::create_with_data(AK::String, AK::String, bool)’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:211:41: error: cannot convert ‘const char [5]’ to ‘AK::StringView’
+  211 |     auto scheme = TRY(String::from_utf8("data"));
+      |                                         ^~~~~~
+      |                                         |
+      |                                         const char [5]
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Diagnostics.h:21:5: note: in definition of macro ‘AK_IGNORE_DIAGNOSTIC’
+   21 |     statement;                                \
+      |     ^~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:211:19: note: in expansion of macro ‘TRY’
+  211 |     auto scheme = TRY(String::from_utf8("data"));
+      |                   ^~~
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:11:
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:66:38: note:   initializing argument 1 of ‘static AK::ErrorOr<AK::String> AK::String::from_utf8(AK::StringView)’
+   66 |     static ErrorOr<String> from_utf8(StringView);
+      |                                      ^~~~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:29:38: error: template argument 1 is invalid
+   29 |         static_assert(!::AK::Detail::IsLvalueReference<decltype(_temporary_result.release_value())>, \
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:211:19: note: in expansion of macro ‘TRY’
+  211 |     auto scheme = TRY(String::from_utf8("data"));
+      |                   ^~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:211:10: error: ‘void scheme’ has incomplete type
+  211 |     auto scheme = TRY(String::from_utf8("data"));
+      |          ^~~~~~
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Assertions.h:12,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/StdLibExtras.h:17,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Types.h:10,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/SinglyLinkedListSizePolicy.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Forward.h:10,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Iterator.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Array.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/CharacterTypes.h:10,
+                 from /home/d4gobert/devel/serenity/AK/URL.cpp:8:
+/home/d4gobert/devel/serenity/AK/URL.cpp: In member function ‘AK::ErrorOr<AK::String> AK::URL::serialize_data_url() const’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:225:30: error: ‘const class AK::String’ has no member named ‘is_null’
+  225 |     VERIFY(!m_data_mime_type.is_null());
+      |                              ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:225:5: note: in expansion of macro ‘VERIFY’
+  225 |     VERIFY(!m_data_mime_type.is_null());
+      |     ^~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:226:28: error: ‘const class AK::String’ has no member named ‘is_null’
+  226 |     VERIFY(!m_data_payload.is_null());
+      |                            ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:226:5: note: in expansion of macro ‘VERIFY’
+  226 |     VERIFY(!m_data_payload.is_null());
+      |     ^~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: In member function ‘AK::ErrorOr<AK::String> AK::URL::serialize(ExcludeFragment) const’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:249:17: error: ‘const class AK::String’ has no member named ‘is_null’
+  249 |     if (!m_host.is_null()) {
+      |                 ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:269:20: error: ‘const class AK::String’ has no member named ‘is_null’
+  269 |         if (m_host.is_null() && m_paths.size() > 1 && m_paths[0].is_empty())
+      |                    ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:277:18: error: ‘const class AK::String’ has no member named ‘is_null’
+  277 |     if (!m_query.is_null()) {
+      |                  ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:282:64: error: ‘const class AK::String’ has no member named ‘is_null’
+  282 |     if (exclude_fragment == ExcludeFragment::No && !m_fragment.is_null()) {
+      |                                                                ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: In member function ‘AK::ErrorOr<AK::String> AK::URL::serialize_for_display() const’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:303:17: error: ‘const class AK::String’ has no member named ‘is_null’
+  303 |     if (!m_host.is_null()) {
+      |                 ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:313:20: error: ‘const class AK::String’ has no member named ‘is_null’
+  313 |         if (m_host.is_null() && m_paths.size() > 1 && m_paths[0].is_empty())
+      |                    ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:321:18: error: ‘const class AK::String’ has no member named ‘is_null’
+  321 |     if (!m_query.is_null()) {
+      |                  ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:326:21: error: ‘const class AK::String’ has no member named ‘is_null’
+  326 |     if (!m_fragment.is_null()) {
+      |                     ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: At global scope:
+/home/d4gobert/devel/serenity/AK/URL.cpp:337:41: error: non-member function ‘AK::DeprecatedString AK::to_deprecated_string()’ cannot have cv-qualifier
+  337 | DeprecatedString to_deprecated_string() const
+      |                                         ^~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: In function ‘AK::DeprecatedString AK::to_deprecated_string()’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:339:24: error: ‘serialize’ was not declared in this scope
+  339 |     auto result = MUST(serialize());
+      |                        ^~~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Diagnostics.h:21:5: note: in definition of macro ‘AK_IGNORE_DIAGNOSTIC’
+   21 |     statement;                                \
+      |     ^~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:339:19: note: in expansion of macro ‘MUST’
+  339 |     auto result = MUST(serialize());
+      |                   ^~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:41:38: error: template argument 1 is invalid
+   41 |         static_assert(!::AK::Detail::IsLvalueReference<decltype(_temporary_result.release_value())>, \
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:339:19: note: in expansion of macro ‘MUST’
+  339 |     auto result = MUST(serialize());
+      |                   ^~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:339:10: error: ‘void result’ has incomplete type
+  339 |     auto result = MUST(serialize());
+      |          ^~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: In member function ‘AK::ErrorOr<AK::String> AK::URL::serialize_origin() const’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:356:20: error: could not convert ‘"null"’ from ‘const char [5]’ to ‘AK::ErrorOr<AK::String>’
+  356 |             return "null";
+      |                    ^~~~~~
+      |                    |
+      |                    const char [5]
+/home/d4gobert/devel/serenity/AK/URL.cpp:359:16: error: could not convert ‘"null"’ from ‘const char [5]’ to ‘AK::ErrorOr<AK::String>’
+  359 |         return "null";
+      |                ^~~~~~
+      |                |
+      |                const char [5]
+/home/d4gobert/devel/serenity/AK/URL.cpp: At global scope:
+/home/d4gobert/devel/serenity/AK/URL.cpp:371:15: error: no declaration matches ‘AK::ErrorOr<bool> AK::URL::equals(const AK::URL&, ExcludeFragment) const’
+  371 | ErrorOr<bool> URL::equals(URL const& other, ExcludeFragment exclude_fragments) const
+      |               ^~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:92:10: note: candidate is: ‘bool AK::URL::equals(const AK::URL&, ExcludeFragment) const’
+   92 |     bool equals(URL const& other, ExcludeFragment = ExcludeFragment::No) const;
+      |          ^~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:25:7: note: ‘class AK::URL’ defined here
+   25 | class URL {
+      |       ^~~
+/home/d4gobert/devel/serenity/AK/URL.cpp: In member function ‘AK::ErrorOr<AK::String> AK::URL::basename() const’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:383:17: error: could not convert ‘<brace-enclosed initializer list>()’ from ‘<brace-enclosed initializer list>’ to ‘AK::ErrorOr<AK::String>’
+  383 |         return {};
+      |                 ^
+      |                 |
+      |                 <brace-enclosed initializer list>
+/home/d4gobert/devel/serenity/AK/URL.cpp:385:17: error: could not convert ‘<brace-enclosed initializer list>()’ from ‘<brace-enclosed initializer list>’ to ‘AK::ErrorOr<AK::String>’
+  385 |         return {};
+      |                 ^
+      |                 |
+      |                 <brace-enclosed initializer list>
+/home/d4gobert/devel/serenity/AK/URL.cpp: In static member function ‘static AK::ErrorOr<AK::String> AK::URL::percent_decode(AK::StringView)’:
+/home/d4gobert/devel/serenity/AK/URL.cpp:456:16: error: could not convert ‘input’ from ‘AK::StringView’ to ‘AK::ErrorOr<AK::String>’
+  456 |         return input;
+      |                ^~~~~
+      |                |
+      |                AK::StringView
+At global scope:
+cc1plus: note: unrecognized command-line option ‘-Wno-unused-command-line-argument’ may have been intended to silence earlier diagnostics
+cc1plus: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1plus: note: unrecognized command-line option ‘-Wno-implicit-const-int-float-conversion’ may have been intended to silence earlier diagnostics
+[2/32] Building CXX object Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URLParser.cpp.o
+FAILED: Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URLParser.cpp.o 
+/usr/bin/ccache /usr/bin/g++ -DLibCore_EXPORTS -I/home/d4gobert/devel/serenity/Meta/Lagom/../.. -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland/Libraries -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland/Services -I/home/d4gobert/devel/serenity/Build/lagom -I/home/d4gobert/devel/serenity/Build/lagom/Userland/Libraries -I/home/d4gobert/devel/serenity/Build/lagom/Userland/Services -std=c++20 -fPIC -Wall -Wextra -Werror -Wno-implicit-const-int-float-conversion -Wno-literal-suffix -Wno-maybe-uninitialized -Wno-unknown-warning-option -Wno-unused-command-line-argument -fsigned-char -fno-exceptions -fdiagnostics-color=always -g1 -O2 -fno-semantic-interposition -fPIC -Wno-expansion-to-defined -MD -MT Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URLParser.cpp.o -MF Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URLParser.cpp.o.d -o Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URLParser.cpp.o -c /home/d4gobert/devel/serenity/AK/URLParser.cpp
+/home/d4gobert/devel/serenity/AK/URLParser.cpp: In static member function ‘static AK::ErrorOr<AK::Optional<AK::URL> > AK::URLParser::parse_data_url(AK::StringView)’:
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:163:17: error: could not convert ‘<brace-enclosed initializer list>()’ from ‘<brace-enclosed initializer list>’ to ‘AK::ErrorOr<AK::Optional<AK::URL> >’
+  163 |         return {};
+      |                 ^
+      |                 |
+      |                 <brace-enclosed initializer list>
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:185:104: error: no matching function for call to ‘AK::URL::URL(<brace-enclosed initializer list>)’
+  185 |     URL url { StringUtils::trim(mime_type, "\n\r\t "sv, TrimMode::Both), move(body), is_base64_encoded };
+      |                                                                                                        ^
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URLParser.h:11,
+                 from /home/d4gobert/devel/serenity/AK/URLParser.cpp:14:
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:121:5: note: candidate: ‘AK::URL::URL(AK::String&&, AK::String&&, AK::String&&, bool)’
+  121 |     URL(String&& data_mime_type, String&& data_payload, String&& scheme, bool payload_is_base64)
+      |     ^~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:121:5: note:   candidate expects 4 arguments, 3 provided
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:48:5: note: candidate: ‘AK::URL::URL(const AK::String&)’
+   48 |     URL(String const& string)
+      |     ^~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:48:5: note:   candidate expects 1 argument, 3 provided
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:47:5: note: candidate: ‘AK::URL::URL(AK::StringView)’
+   47 |     URL(StringView);
+      |     ^~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:47:5: note:   candidate expects 1 argument, 3 provided
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:46:5: note: candidate: ‘AK::URL::URL()’
+   46 |     URL() = default;
+      |     ^~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:46:5: note:   candidate expects 0 arguments, 3 provided
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:25:7: note: candidate: ‘AK::URL::URL(const AK::URL&)’
+   25 | class URL {
+      |       ^~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:25:7: note:   candidate expects 1 argument, 3 provided
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:25:7: note: candidate: ‘AK::URL::URL(AK::URL&&)’
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:25:7: note:   candidate expects 1 argument, 3 provided
+/home/d4gobert/devel/serenity/AK/URLParser.cpp: In static member function ‘static AK::URL AK::URLParser::parse(AK::StringView, const AK::URL*, AK::Optional<AK::URL>, AK::Optional<State>)’:
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:208:24: error: ‘class AK::ErrorOr<AK::Optional<AK::URL> >’ has no member named ‘has_value’
+  208 |         if (!maybe_url.has_value())
+      |                        ^~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:210:39: error: could not convert ‘AK::ErrorOr<T, ErrorType>::release_value() [with T = AK::Optional<AK::URL>; E = AK::Error]()’ from ‘AK::Optional<AK::URL>’ to ‘AK::URL’
+  210 |         return maybe_url.release_value();
+      |                ~~~~~~~~~~~~~~~~~~~~~~~^~
+      |                                       |
+      |                                       AK::Optional<AK::URL>
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:244:54: error: conversion from ‘AK::StringView’ to non-scalar type ‘AK::String’ requested
+  244 |     String processed_input = raw_input.substring_view(start_index, end_index - start_index);
+      |                              ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:249:83: error: ‘class AK::ErrorOr<AK::String>’ has no member named ‘replace’
+  249 |         processed_input = processed_input.replace("\t"sv, ""sv, ReplaceMode::All).replace("\n"sv, ""sv, ReplaceMode::All);
+      |                                                                                   ^~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:296:61: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘AK::DeprecatedString’)
+  296 |                 url->m_scheme = buffer.to_deprecated_string();
+      |                                                             ^
+In file included from /home/d4gobert/devel/serenity/AK/URLParser.cpp:11:
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘AK::DeprecatedString’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘AK::DeprecatedString’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:313:38: error: cannot convert ‘const char [1]’ to ‘AK::String’
+  313 |                     url->append_path("");
+      |                                      ^~
+      |                                      |
+      |                                      const char [1]
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:79:29: note:   initializing argument 1 of ‘void AK::URL::append_path(AK::String)’
+   79 |     void append_path(String path) { m_paths.append(move(path)); }
+      |                      ~~~~~~~^~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:331:35: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  331 |                 url->m_fragment = "";
+      |                                   ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:376:36: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  376 |                     url->m_query = "";
+      |                                    ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:379:39: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  379 |                     url->m_fragment = "";
+      |                                       ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:445:84: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘AK::ErrorOr<AK::String>’)
+  445 |                         url->m_password = URL::percent_decode(builder.string_view());
+      |                                                                                    ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:450:84: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘AK::ErrorOr<AK::String>’)
+  450 |                         url->m_username = URL::percent_decode(builder.string_view());
+      |                                                                                    ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:475:27: error: ‘class AK::ErrorOr<AK::String>’ has no member named ‘has_value’
+  475 |                 if (!host.has_value())
+      |                           ^~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:486:27: error: ‘class AK::ErrorOr<AK::String>’ has no member named ‘has_value’
+  486 |                 if (!host.has_value())
+      |                           ^~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:524:29: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [5]’)
+  524 |             url->m_scheme = "file";
+      |                             ^~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [5]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [5]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:525:27: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  525 |             url->m_host = "";
+      |                           ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:535:36: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  535 |                     url->m_query = "";
+      |                                    ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:538:39: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  538 |                     url->m_fragment = "";
+      |                                       ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:575:35: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  575 |                     url->m_host = "";
+      |                                   ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:579:31: error: ‘class AK::ErrorOr<AK::String>’ has no member named ‘has_value’
+  579 |                     if (!host.has_value())
+      |                               ^~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:582:32: error: no match for ‘operator=’ (operand types are ‘AK::ErrorOr<AK::String>’ and ‘const char [1]’)
+  582 |                         host = "";
+      |                                ^~
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Format.h:14,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/SourceLocation.h:10,
+                 from /home/d4gobert/devel/serenity/AK/URLParser.cpp:10:
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Error.h:145:28: note: candidate: ‘AK::ErrorOr<T, ErrorType>& AK::ErrorOr<T, ErrorType>::operator=(AK::ErrorOr<T, ErrorType>&&) [with T = AK::String; E = AK::Error]’
+  145 |     ALWAYS_INLINE ErrorOr& operator=(ErrorOr&&) = default;
+      |                            ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Error.h:145:38: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::ErrorOr<AK::String>&&’
+  145 |     ALWAYS_INLINE ErrorOr& operator=(ErrorOr&&) = default;
+      |                                      ^~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:600:32: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  600 |                 url->m_query = "";
+      |                                ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:603:35: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  603 |                 url->m_fragment = "";
+      |                                   ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:619:42: error: cannot convert ‘const char [1]’ to ‘AK::String’
+  619 |                         url->append_path("");
+      |                                          ^~
+      |                                          |
+      |                                          const char [1]
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:79:29: note:   initializing argument 1 of ‘void AK::URL::append_path(AK::String)’
+   79 |     void append_path(String path) { m_paths.append(move(path)); }
+      |                      ~~~~~~~^~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:621:38: error: cannot convert ‘const char [1]’ to ‘AK::String’
+  621 |                     url->append_path("");
+      |                                      ^~
+      |                                      |
+      |                                      const char [1]
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:79:29: note:   initializing argument 1 of ‘void AK::URL::append_path(AK::String)’
+   79 |     void append_path(String path) { m_paths.append(move(path)); }
+      |                      ~~~~~~~^~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:630:57: error: cannot convert ‘AK::ErrorOr<AK::String>’ to ‘AK::String’
+  630 |                     url->append_path(URL::percent_decode(buffer.string_view()));
+      |                                      ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+      |                                                         |
+      |                                                         AK::ErrorOr<AK::String>
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:79:29: note:   initializing argument 1 of ‘void AK::URL::append_path(AK::String)’
+   79 |     void append_path(String path) { m_paths.append(move(path)); }
+      |                      ~~~~~~~^~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:634:36: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  634 |                     url->m_query = "";
+      |                                    ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:637:39: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  637 |                     url->m_fragment = "";
+      |                                       ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:653:75: error: no match for ‘operator=’ (operand types are ‘AK::Vector<AK::String>::VisibleType’ {aka ‘AK::String’} and ‘AK::ErrorOr<AK::String>’)
+  653 |                 url->m_paths[0] = URL::percent_decode(buffer.string_view());
+      |                                                                           ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:654:32: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  654 |                 url->m_query = "";
+      |                                ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:658:75: error: no match for ‘operator=’ (operand types are ‘AK::Vector<AK::String>::VisibleType’ {aka ‘AK::String’} and ‘AK::ErrorOr<AK::String>’)
+  658 |                 url->m_paths[0] = URL::percent_decode(buffer.string_view());
+      |                                                                           ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:659:35: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  659 |                 url->m_fragment = "";
+      |                                   ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:669:79: error: no match for ‘operator=’ (operand types are ‘AK::Vector<AK::String>::VisibleType’ {aka ‘AK::String’} and ‘AK::ErrorOr<AK::String>’)
+  669 |                     url->m_paths[0] = URL::percent_decode(buffer.string_view());
+      |                                                                               ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:678:108: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘AK::ErrorOr<AK::String>’)
+  678 |                 url->m_query = percent_encode_after_encoding(buffer.string_view(), query_percent_encode_set);
+      |                                                                                                            ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:681:39: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘const char [1]’)
+  681 |                     url->m_fragment = "";
+      |                                       ^~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘const char [1]’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URLParser.cpp:700:75: error: no match for ‘operator=’ (operand types are ‘AK::String’ and ‘AK::ErrorOr<AK::String>’)
+  700 |                 url->m_fragment = URL::percent_decode(buffer.string_view());
+      |                                                                           ^
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:13: note: candidate: ‘AK::String& AK::String::operator=(AK::String&&)’
+   50 |     String& operator=(String&&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:50:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘AK::String&&’
+   50 |     String& operator=(String&&);
+      |                       ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:13: note: candidate: ‘AK::String& AK::String::operator=(const AK::String&)’
+   51 |     String& operator=(String const&);
+      |             ^~~~~~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/String.h:51:23: note:   no known conversion for argument 1 from ‘AK::ErrorOr<AK::String>’ to ‘const AK::String&’
+   51 |     String& operator=(String const&);
+      |                       ^~~~~~~~~~~~~
+At global scope:
+cc1plus: note: unrecognized command-line option ‘-Wno-unused-command-line-argument’ may have been intended to silence earlier diagnostics
+cc1plus: note: unrecognized command-line option ‘-Wno-unknown-warning-option’ may have been intended to silence earlier diagnostics
+cc1plus: note: unrecognized command-line option ‘-Wno-implicit-const-int-float-conversion’ may have been intended to silence earlier diagnostics
+ninja: build stopped: subcommand failed.
+FAILED: lagom-prefix/src/lagom-stamp/lagom-build /home/d4gobert/devel/serenity/Build/superbuild-x86_64/lagom-prefix/src/lagom-stamp/lagom-build 
+cd /home/d4gobert/devel/serenity/Build/lagom && /usr/bin/cmake --build .
+ninja: build stopped: subcommand failed.
