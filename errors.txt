@@ -4,36 +4,17 @@ ninja: no work to do.
 -- Install configuration: ""
 [2/5] Performing build step for 'serenity'
 [0/2] Re-checking globbed directories...
-[1/2493] cd /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibC && /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-gcc-ar -x /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibC/libLibCStaticWithoutDeps.a && /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-gcc-ar -x /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibSystem/libLibSystemStatic.a && /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-gcc-ar -x /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibSanitizer/libLibUBSanitizerStatic.a && /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-gcc-ar -rcs /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibC/libc.a *.o
-[2/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Action.cpp.o
-[3/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/ActionGroup.cpp.o
-[4/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/BoxLayout.cpp.o
-[5/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Application.cpp.o
-[6/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Breadcrumbbar.cpp.o
-[7/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Calendar.cpp.o
-[8/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/CheckBox.cpp.o
-[9/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Clipboard.cpp.o
-[10/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/ColorInput.cpp.o
-[11/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/ColorPicker.cpp.o
-[12/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/ColumnsView.cpp.o
-[13/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/CommonLocationsProvider.cpp.o
-[14/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/AutocompleteProvider.cpp.o
-[15/2493] Building CXX object Userland/Libraries/LibDesktop/CMakeFiles/LibDesktop.dir/Launcher.cpp.o
-[16/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/ConnectionToWindowManagerServer.cpp.o
-[17/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/CommonMenus.cpp.o
-[18/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Frame.cpp.o
-[19/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/ComboBox.cpp.o
-[20/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Desktop.cpp.o
-[21/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Dialog.cpp.o
-[22/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Event.cpp.o
-[23/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/DisplayLink.cpp.o
-[24/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/CommandPalette.cpp.o
-[25/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/EditingEngine.cpp.o
-[26/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/CommonActions.cpp.o
-[27/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/EmojiInputDialog.cpp.o
-[28/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FileIconProvider.cpp.o
-[29/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/DragOperation.cpp.o
-[30/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FileSystemModel.cpp.o
+[1/2462] cd /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibC && /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-gcc-ar -x /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibC/libLibCStaticWithoutDeps.a && /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-gcc-ar -x /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibSystem/libLibSystemStatic.a && /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-gcc-ar -x /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibSanitizer/libLibUBSanitizerStatic.a && /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-gcc-ar -rcs /home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries/LibC/libc.a *.o
+[2/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/GitCommitLexer.cpp.o
+[3/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/GitCommitSyntaxHighlighter.cpp.o
+[4/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/GML/SyntaxHighlighter.cpp.o
+[5/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/GlyphMapWidget.cpp.o
+[6/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/GML/Lexer.cpp.o
+[7/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/Icon.cpp.o
+[8/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/GML/Parser.cpp.o
+[9/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/GroupBox.cpp.o
+[10/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/IncrementalSearchBanner.cpp.o
+[11/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FileSystemModel.cpp.o
 FAILED: Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FileSystemModel.cpp.o 
 /usr/bin/ccache /home/d4gobert/devel/serenity/Toolchain/Local/x86_64/bin/x86_64-pc-serenity-g++ --sysroot=/home/d4gobert/devel/serenity/Build/x86_64/Root -DENABLE_COMPILETIME_FORMAT_CHECK -DLibGUI_EXPORTS -DSANITIZE_PTRS -I/home/d4gobert/devel/serenity/. -I/home/d4gobert/devel/serenity/Userland/Libraries -I/home/d4gobert/devel/serenity/Userland/Libraries/LibC -I/home/d4gobert/devel/serenity/Userland/Libraries/LibCrypt -I/home/d4gobert/devel/serenity/Userland/Libraries/LibSystem -I/home/d4gobert/devel/serenity/Userland/Services -I/home/d4gobert/devel/serenity/Userland -I/home/d4gobert/devel/serenity/Build/x86_64 -I/home/d4gobert/devel/serenity/Build/x86_64/Userland/Services -I/home/d4gobert/devel/serenity/Build/x86_64/Userland/Libraries -I/home/d4gobert/devel/serenity/Build/x86_64/Userland -pie -fpic -std=c++20 -fPIC -fdiagnostics-color=always -Wall -Wextra -Werror -Wno-address-of-packed-member -Wcast-qual -Wdeprecated-copy -Wduplicated-cond -Wformat=2 -Wimplicit-fallthrough -Wlogical-op -Wmisleading-indentation -Wmissing-declarations -Wnon-virtual-dtor -Wsuggest-override -Wno-unknown-warning-option -Wundef -Wunused -Wno-unused-command-line-argument -Wwrite-strings -fdiagnostics-color=always -fno-delete-null-pointer-checks -ffile-prefix-map=/home/d4gobert/devel/serenity=. -fno-exceptions -fno-semantic-interposition -fsized-deallocation -fstack-clash-protection -fstack-protector-strong -gdwarf-4 -g1 -Wno-literal-suffix -Wno-maybe-uninitialized -Wno-expansion-to-defined -Wcast-align -Wdouble-promotion -O2 -MD -MT Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FileSystemModel.cpp.o -MF Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FileSystemModel.cpp.o.d -o Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FileSystemModel.cpp.o -c /home/d4gobert/devel/serenity/Userland/Libraries/LibGUI/FileSystemModel.cpp
 /home/d4gobert/devel/serenity/Userland/Libraries/LibGUI/FileSystemModel.cpp: In member function 'virtual GUI::Variant GUI::FileSystemModel::data(const GUI::ModelIndex&, GUI::ModelRole) const':
@@ -52,9 +33,9 @@ In file included from /home/d4gobert/devel/serenity/Userland/Libraries/LibCore/M
 At global scope:
 cc1plus: note: unrecognized command-line option '-Wno-unused-command-line-argument' may have been intended to silence earlier diagnostics
 cc1plus: note: unrecognized command-line option '-Wno-unknown-warning-option' may have been intended to silence earlier diagnostics
-[31/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FilteringProxyModel.cpp.o
-[32/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FilePicker.cpp.o
-[33/2493] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/ConnectionToWindowServer.cpp.o
+[12/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/HeaderView.cpp.o
+[13/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/GML/AutocompleteProvider.cpp.o
+[14/2462] Building CXX object Userland/Libraries/LibGUI/CMakeFiles/LibGUI.dir/FontPicker.cpp.o
 ninja: build stopped: subcommand failed.
 FAILED: serenity-prefix/src/serenity-stamp/serenity-build /home/d4gobert/devel/serenity/Build/superbuild-x86_64/serenity-prefix/src/serenity-stamp/serenity-build 
 cd /home/d4gobert/devel/serenity/Build/x86_64 && /usr/bin/cmake --build .
