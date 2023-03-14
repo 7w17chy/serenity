@@ -48,11 +48,14 @@ void WebSocketImplSerenity::connect(ConnectionInfo const& connection_info)
                 on_connection_error();
             });
             return TRY(Core::BufferedSocket<TLS::TLSv12>::create(
-                TRY(TLS::TLSv12::connect(connection_info.url().host(), connection_info.url().port_or_default(), move(options)))));
+                TRY(TLS::TLSv12::connect(connection_info.url().host().to_deprecated_string(),
+                    connection_info.url().port_or_default(),
+                    move(options)))));
         }
 
         return TRY(Core::BufferedTCPSocket::create(
-            TRY(Core::TCPSocket::connect(connection_info.url().host(), connection_info.url().port_or_default()))));
+            TRY(Core::TCPSocket::connect(connection_info.url().host().to_deprecated_string(),
+                connection_info.url().port_or_default()))));
     }();
 
     if (socket_result.is_error()) {

@@ -239,7 +239,8 @@ static size_t print_name(const struct stat& st, DeprecatedString const& name, ch
     if (!flag_disable_hyperlinks) {
         auto full_path = Core::DeprecatedFile::real_path_for(path_for_hyperlink);
         if (!full_path.is_null()) {
-            auto url = URL::create_with_file_scheme(full_path, {}, hostname());
+            auto full_path_string = MUST(String::from_utf8(full_path));
+            auto url = MUST(URL::create_with_file_scheme(full_path_string, {}, hostname()));
             out("\033]8;;{}\033\\", url.serialize());
         }
     }

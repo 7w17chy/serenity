@@ -75,7 +75,7 @@ ErrorOr<NonnullRefPtr<Node const>> Node::try_find_from_help_url(URL const& url)
 
     auto paths = url.paths();
     auto const section = paths.take_first();
-    auto maybe_section_number = section.to_uint();
+    auto maybe_section_number = section.to_number<u32>();
     if (!maybe_section_number.has_value())
         return Error::from_string_view("Bad section number"sv);
     auto section_number = maybe_section_number.value();
@@ -85,7 +85,7 @@ ErrorOr<NonnullRefPtr<Node const>> Node::try_find_from_help_url(URL const& url)
     NonnullRefPtr<Node const> current_node = sections[section_number - 1];
 
     while (!paths.is_empty()) {
-        auto next_path_segment = TRY(String::from_deprecated_string(paths.take_first()));
+        auto next_path_segment = paths.take_first();
         auto children = TRY(current_node->children());
         for (auto const& child : children) {
             if (TRY(child->name()) == next_path_segment) {

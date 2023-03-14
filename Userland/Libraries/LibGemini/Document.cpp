@@ -18,7 +18,9 @@ DeprecatedString Document::render_to_html() const
     StringBuilder html_builder;
     html_builder.append("<!DOCTYPE html>\n<html>\n"sv);
     html_builder.append("<head>\n<title>"sv);
-    html_builder.append(m_url.path());
+    // FIXME: turn this MUST into a TRY => allow this function to propagate errors
+    auto url_path = MUST(m_url.path());
+    html_builder.append(url_path.to_deprecated_string());
     html_builder.append("</title>\n</head>\n"sv);
     html_builder.append("<body>\n"sv);
     for (auto& line : m_lines) {

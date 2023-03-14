@@ -41,10 +41,10 @@ struct Proxy {
         }
         if (data.type == Core::ProxyData::SOCKS5) {
             if constexpr (requires { SocketType::connect(declval<DeprecatedString>(), *proxy_client_storage, forward<Args>(args)...); }) {
-                proxy_client_storage = TRY(Core::SOCKSProxyClient::connect(data.host_ipv4, data.port, Core::SOCKSProxyClient::Version::V5, url.host(), url.port_or_default()));
+                proxy_client_storage = TRY(Core::SOCKSProxyClient::connect(data.host_ipv4, data.port, Core::SOCKSProxyClient::Version::V5, url.host().to_deprecated_string(), url.port_or_default()));
                 return TRY(SocketType::connect(url.host(), *proxy_client_storage, forward<Args>(args)...));
             } else if constexpr (IsSame<SocketType, Core::TCPSocket>) {
-                return TRY(Core::SOCKSProxyClient::connect(data.host_ipv4, data.port, Core::SOCKSProxyClient::Version::V5, url.host(), url.port_or_default()));
+                return TRY(Core::SOCKSProxyClient::connect(data.host_ipv4, data.port, Core::SOCKSProxyClient::Version::V5, url.host().to_deprecated_string(), url.port_or_default()));
             } else {
                 return Error::from_string_literal("SOCKS5 not supported for this socket type");
             }

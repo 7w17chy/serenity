@@ -49,9 +49,10 @@ ErrorOr<ByteBuffer> HttpRequest::to_raw_request() const
     TRY(builder.try_append(method_name()));
     TRY(builder.try_append(' '));
     // NOTE: The percent_encode is so that e.g. spaces are properly encoded.
-    auto path = m_url.path();
+    auto path = TRY(m_url.path());
     VERIFY(!path.is_empty());
-    TRY(builder.try_append(URL::percent_encode(m_url.path(), URL::PercentEncodeSet::EncodeURI)));
+    auto percent_encoded = TRY(URL::percent_encode(path, URL::PercentEncodeSet::EncodeURI));
+    TRY(builder.try_append(percent_encoded));
     if (!m_url.query().is_empty()) {
         TRY(builder.try_append('?'));
         TRY(builder.try_append(m_url.query()));
@@ -216,11 +217,11 @@ Optional<HttpRequest> HttpRequest::from_raw_request(ReadonlyBytes raw_request)
     request.m_url.set_cannot_be_a_base_url(true);
     if (url_parts.size() == 2) {
         request.m_resource = url_parts[0];
-        request.m_url.set_paths({ url_parts[0] });
-        request.m_url.set_query(url_parts[1]);
+        request.m_url.set_paths({ MUST(String::from_utf8(url_parts[0])) });
+        request.m_url.set_query(MUST(String::from_utf8(url_parts[1])));
     } else {
         request.m_resource = resource;
-        request.m_url.set_paths({ resource });
+        request.m_url.set_paths({ MUST(String::from_utf8(resource)) });
     }
 
     request.set_body(move(body));

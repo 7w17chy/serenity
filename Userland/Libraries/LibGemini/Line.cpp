@@ -68,7 +68,7 @@ Link::Link(DeprecatedString text, Document const& document)
             ++offset;
         m_name = url_string.substring_view(offset, url_string.length() - offset);
     }
-    m_url = document.url().complete_url(url);
+    m_url = MUST(document.url().complete_url(url));
     if (m_name.is_null())
         m_name = m_url.to_deprecated_string();
 }
