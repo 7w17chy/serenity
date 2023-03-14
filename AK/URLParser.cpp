@@ -238,8 +238,6 @@ ErrorOr<URL> URLParser::parse(StringView raw_input, URL const* base_url, Optiona
         if (has_validation_error)
             report_validation_error();
     }
-    if (start_index >= end_index)
-        return {};
 
     String processed_input = raw_input.substring_view(start_index, end_index - start_index);
 
