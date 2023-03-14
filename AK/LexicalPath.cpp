@@ -6,6 +6,7 @@
  */
 
 #include <AK/LexicalPath.h>
+#include <AK/String.h>
 #include <AK/StringBuilder.h>
 #include <AK/StringView.h>
 #include <AK/Vector.h>
@@ -66,6 +67,16 @@ Vector<DeprecatedString> LexicalPath::parts() const
         vector.unchecked_append(part);
     return vector;
 }
+
+// FIXME: refactor this once LexicalPath has been migrated to String
+ErrorOr<Vector<String>> LexicalPath::parts_string_remove_when_migrated() const
+{
+    Vector<String> vector;
+    vector.ensure_capacity(m_parts.size());
+    for (auto& part : m_parts)
+        vector.unchecked_append(TRY(String::from_utf8(part)));
+    return vector;
+};
 
 bool LexicalPath::has_extension(StringView extension) const
 {
