@@ -58,7 +58,7 @@ public:
     static URL parse(StringView input, URL const* base_url = nullptr, Optional<URL> url = {}, Optional<State> state_override = {});
 
 private:
-    static ErrorOr<Optional<URL>> parse_data_url(StringView raw_input);
+    static ErrorOr<URL> parse_data_url(StringView raw_input);
 };
 
 #undef ENUMERATE_STATES

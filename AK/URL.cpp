@@ -109,9 +109,10 @@ bool URL::compute_validity() const
         if (m_data_mime_type.is_empty())
             return false;
         if (m_data_payload_is_base64) {
-            if (m_data_payload.length() % 4 != 0)
+            auto payload_view = m_data_payload.bytes_as_string_view();
+            if (payload_view.length() % 4 != 0)
                 return false;
-            for (auto character : m_data_payload) {
+            for (auto character : payload_view) {
                 if (!is_ascii_alphanumeric(character) || character == '+' || character == '/' || character == '=')
                     return false;
             }

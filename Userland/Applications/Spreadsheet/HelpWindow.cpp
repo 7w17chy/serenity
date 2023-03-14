@@ -123,7 +123,11 @@ HelpWindow::HelpWindow(GUI::Window* parent)
             window->show();
         } else if (url.host() == "doc") {
             auto entry = LexicalPath::basename(url.path());
-            m_webview->load(URL::create_with_data("text/html", render(entry)));
+            auto url = URL::create_with_data("text/html", render(entry));
+            if (url.is_error()) {
+                GUI::MessageBox::show_error(this, url.string_literal());
+            }
+            m_webview->load(move(url));
         } else {
             dbgln("Invalid spreadsheet action domain '{}'", url.host());
         }

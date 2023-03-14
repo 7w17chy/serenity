@@ -153,14 +153,14 @@ static ErrorOr<String> percent_encode_after_encoding(StringView input, URL::Perc
 
 // https://fetch.spec.whatwg.org/#data-urls
 // FIXME: This only loosely follows the spec, as we use the same class for "regular" and data URLs, unlike the spec.
-ErrorOr<Optional<URL>> URLParser::parse_data_url(StringView raw_input)
+ErrorOr<URL> URLParser::parse_data_url(StringView raw_input)
 {
     dbgln_if(URL_PARSER_DEBUG, "URLParser::parse_data_url: Parsing '{}'.", raw_input);
     VERIFY(raw_input.starts_with("data:"sv));
     auto input = raw_input.substring_view(5);
     auto comma_offset = input.find(',');
     if (!comma_offset.has_value())
-        return {};
+        return Error::from_string_literal("URLParser::parse_data_url: Found invalid ',' symbol");
     auto mime_type = StringUtils::trim(input.substring_view(0, comma_offset.value()), "\t\n\f\r "sv, TrimMode::Both);
     auto encoded_body = input.substring_view(comma_offset.value() + 1);
     auto body = TRY(URL::percent_decode(encoded_body));
@@ -182,8 +182,10 @@ ErrorOr<Optional<URL>> URLParser::parse_data_url(StringView raw_input)
     }
 
     // FIXME: Parse the MIME type's components according to https://mimesniff.spec.whatwg.org/#parse-a-mime-type
-    URL url { StringUtils::trim(mime_type, "\n\r\t "sv, TrimMode::Both), move(body), is_base64_encoded };
-    dbgln_if(URL_PARSER_DEBUG, "URLParser::parse_data_url: Parsed data URL to be '{}'.", url.serialize());
+    auto _mime_type = TRY(String::from_utf8(StringUtils::trim(mime_type, "\n\r\t "sv, TrimMode::Both)));
+    auto url = TRY(URL::create_with_data(move(_mime_type), move(body), is_base64_encoded));
+
+    dbgln_if(URL_PARSER_DEBUG, "URLParser::parse_data_url: Parsed data URL to be '{}'.", TRY(url.serialize()));
     return url;
 }
 
@@ -197,16 +199,14 @@ ErrorOr<Optional<URL>> URLParser::parse_data_url(StringView raw_input)
 // NOTE: Since the URL class's member variables contain percent decoded data, we have to deviate from the URL parser specification when setting
 //       some of those values. Because the specification leaves all values percent encoded in their URL data structure, we have to percent decode
 //       everything before setting the member variables.
-URL URLParser::parse(StringView raw_input, URL const* base_url, Optional<URL> url, Optional<State> state_override)
+ErrorOr<URL> URLParser::parse(StringView raw_input, URL const* base_url, Optional<URL> url, Optional<State> state_override)
 {
     dbgln_if(URL_PARSER_DEBUG, "URLParser::parse: Parsing '{}'", raw_input);
     if (raw_input.is_empty())
         return base_url ? *base_url : URL {};
 
     if (raw_input.starts_with("data:"sv)) {
-        auto maybe_url = parse_data_url(raw_input);
-        if (!maybe_url.has_value())
-            return {};
+        auto maybe_url = TRY(parse_data_url(raw_input));
         return maybe_url.release_value();
     }
 
@@ -442,19 +442,19 @@ URL URLParser::parse(StringView raw_input, URL const* base_url, Optional<URL> ur
                         builder.append(url->password());
                         URL::append_percent_encoded_if_necessary(builder, c, URL::PercentEncodeSet::Userinfo);
                         // NOTE: This is has to be encoded and then decoded because the original sequence could contain already percent-encoded sequences.
-                        url->m_password = URL::percent_decode(builder.string_view());
+                        url->m_password = TRY(URL::percent_decode(builder.string_view()));
                     } else {
                         builder.append(url->username());
                         URL::append_percent_encoded_if_necessary(builder, c, URL::PercentEncodeSet::Userinfo);
                         // NOTE: This is has to be encoded and then decoded because the original sequence could contain already percent-encoded sequences.
-                        url->m_username = URL::percent_decode(builder.string_view());
+                        url->m_username = TRY(URL::percent_decode(builder.string_view()));
                     }
                 }
                 buffer.clear();
             } else if (code_point == end_of_file || code_point == '/' || code_point == '?' || code_point == '#' || (url->is_special() && code_point == '\\')) {
                 if (at_sign_seen && buffer.is_empty()) {
                     report_validation_error();
-                    return {};
+                    return Error::from_string_literal("URLParser::parse: encountered invalid URL data");
                 }
                 // NOTE: This decreases the iterator by the number of code points in buffer plus one.
                 iterator = input.iterator_at_byte_offset(iterator - input.begin() - buffer.length() - 1);
@@ -469,22 +469,18 @@ URL URLParser::parse(StringView raw_input, URL const* base_url, Optional<URL> ur
             if (code_point == ':' && !inside_brackets) {
                 if (buffer.is_empty()) {
                     report_validation_error();
-                    return {};
+                    Error::from_string_literal("URLParser::parse: expected host or hostname, found nothing");
                 }
-                auto host = parse_host(buffer.string_view(), !url->is_special());
-                if (!host.has_value())
-                    return {};
+                auto host = TRY(parse_host(buffer.string_view(), !url->is_special()));
                 url->m_host = host.release_value();
                 buffer.clear();
                 state = State::Port;
             } else if (code_point == end_of_file || code_point == '/' || code_point == '?' || code_point == '#' || (url->is_special() && code_point == '\\')) {
                 if (url->is_special() && buffer.is_empty()) {
                     report_validation_error();
-                    return {};
+                    return Error::from_string_literal("URLParser::parse: encountered invalid symbol");
                 }
-                auto host = parse_host(buffer.string_view(), !url->is_special());
-                if (!host.has_value())
-                    return {};
+                auto host = TRY(parse_host(buffer.string_view(), !url->is_special()));
                 url->m_host = host.value();
                 buffer.clear();
                 state = State::Port;
@@ -505,7 +501,7 @@ URL URLParser::parse(StringView raw_input, URL const* base_url, Optional<URL> ur
                     auto port = buffer.string_view().to_uint();
                     if (!port.has_value() || port.value() > 65535) {
                         report_validation_error();
-                        return {};
+                        return Error::from_string_literal("URLParser::parse: couldn't parse port");
                     }
                     if (port.value() == URL::default_port_for_scheme(url->scheme()))
                         url->m_port = {};
@@ -517,7 +513,7 @@ URL URLParser::parse(StringView raw_input, URL const* base_url, Optional<URL> ur
                 continue;
             } else {
                 report_validation_error();
-                return {};
+                return Error::from_string_literal("URLParser::parse: couldn't parse port");
             }
             break;
         case State::File:
@@ -575,9 +571,7 @@ URL URLParser::parse(StringView raw_input, URL const* base_url, Optional<URL> ur
                     url->m_host = "";
                     state = State::PathStart;
                 } else {
-                    auto host = parse_host(buffer.string_view(), true);
-                    if (!host.has_value())
-                        return {};
+                    auto host = TRY(parse_host(buffer.string_view(), true));
                     if (host.value() == "localhost")
                         host = "";
                     url->m_host = host.release_value();
@@ -711,8 +705,8 @@ URL URLParser::parse(StringView raw_input, URL const* base_url, Optional<URL> ur
     }
 
     url->m_valid = true;
-    dbgln_if(URL_PARSER_DEBUG, "URLParser::parse: Parsed URL to be '{}'.", url->serialize());
-    return url.release_value();
+    dbgln_if(URL_PARSER_DEBUG, "URLParser::parse: Parsed URL to be '{}'.", TRY(url->serialize()));
+    return url;
 }
 
 }
