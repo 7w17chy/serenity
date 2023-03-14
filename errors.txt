@@ -28,6 +28,75 @@ cc1plus: all warnings being treated as errors
 [2/32] Building CXX object Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o
 FAILED: Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o 
 /usr/bin/ccache /usr/bin/g++ -DLibCore_EXPORTS -I/home/d4gobert/devel/serenity/Meta/Lagom/../.. -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland/Libraries -I/home/d4gobert/devel/serenity/Meta/Lagom/../../Userland/Services -I/home/d4gobert/devel/serenity/Build/lagom -I/home/d4gobert/devel/serenity/Build/lagom/Userland/Libraries -I/home/d4gobert/devel/serenity/Build/lagom/Userland/Services -std=c++20 -fPIC -Wall -Wextra -Werror -Wno-implicit-const-int-float-conversion -Wno-literal-suffix -Wno-maybe-uninitialized -Wno-unknown-warning-option -Wno-unused-command-line-argument -fsigned-char -fno-exceptions -fdiagnostics-color=always -g1 -O2 -fno-semantic-interposition -fPIC -Wno-expansion-to-defined -MD -MT Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o -MF Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o.d -o Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/serenity/AK/URL.cpp.o -c /home/d4gobert/devel/serenity/AK/URL.cpp
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Optional.h:12,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/StringView.h:13,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/CheckedFormatString.h:12,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Format.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/DeprecatedString.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:10,
+                 from /home/d4gobert/devel/serenity/AK/URL.cpp:10:
+/home/d4gobert/devel/serenity/AK/URL.cpp: In constructor ‘AK::URL::URL(AK::StringView)’:
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:41:83: error: ‘class AK::URL’ has no member named ‘release_value’
+   41 |         static_assert(!::AK::Detail::IsLvalueReference<decltype(_temporary_result.release_value())>, \
+      |                                                                                   ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:21:11: note: in expansion of macro ‘MUST’
+   21 |     : URL(MUST(URLParser::parse(string)))
+      |           ^~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:41:83: error: ‘class AK::URL’ has no member named ‘release_value’
+   41 |         static_assert(!::AK::Detail::IsLvalueReference<decltype(_temporary_result.release_value())>, \
+      |                                                                                   ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:21:11: note: in expansion of macro ‘MUST’
+   21 |     : URL(MUST(URLParser::parse(string)))
+      |           ^~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:41:38: error: template argument 1 is invalid
+   41 |         static_assert(!::AK::Detail::IsLvalueReference<decltype(_temporary_result.release_value())>, \
+      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:21:11: note: in expansion of macro ‘MUST’
+   21 |     : URL(MUST(URLParser::parse(string)))
+      |           ^~~~
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Assertions.h:12,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/StdLibExtras.h:17,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Types.h:10,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/SinglyLinkedListSizePolicy.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Forward.h:10,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Iterator.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Array.h:9,
+                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/CharacterTypes.h:10,
+                 from /home/d4gobert/devel/serenity/AK/URL.cpp:8:
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:43:35: error: ‘class AK::URL’ has no member named ‘is_error’
+   43 |         VERIFY(!_temporary_result.is_error());                                                       \
+      |                                   ^~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:21:11: note: in expansion of macro ‘MUST’
+   21 |     : URL(MUST(URLParser::parse(string)))
+      |           ^~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:44:27: error: ‘class AK::URL’ has no member named ‘release_value’
+   44 |         _temporary_result.release_value();                                                           \
+      |                           ^~~~~~~~~~~~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:21:11: note: in expansion of macro ‘MUST’
+   21 |     : URL(MUST(URLParser::parse(string)))
+      |           ^~~~
+/home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:37:5: error: invalid use of void expression
+   37 |     ({                                                                                               \
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   38 |         /* Ignore -Wshadow to allow nesting the macro. */                                            \
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   39 |         AK_IGNORE_DIAGNOSTIC("-Wshadow",                                                             \
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   40 |             auto&& _temporary_result = (expression));                                                \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   41 |         static_assert(!::AK::Detail::IsLvalueReference<decltype(_temporary_result.release_value())>, \
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   42 |             "Do not return a reference from a fallible expression");                                 \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   43 |         VERIFY(!_temporary_result.is_error());                                                       \
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   44 |         _temporary_result.release_value();                                                           \
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   45 |     })
+      |     ~~
+/home/d4gobert/devel/serenity/AK/URL.cpp:21:11: note: in expansion of macro ‘MUST’
+   21 |     : URL(MUST(URLParser::parse(string)))
+      |           ^~~~
 /home/d4gobert/devel/serenity/AK/URL.cpp: In member function ‘bool AK::URL::compute_validity() const’:
 /home/d4gobert/devel/serenity/AK/URL.cpp:134:38: error: ‘const class AK::String’ has no member named ‘is_null’
   134 |     if (m_scheme == "file" && m_host.is_null())
@@ -36,7 +105,6 @@ FAILED: Userland/Libraries/LibCore/CMakeFiles/LibCore.dir/home/d4gobert/devel/se
 /home/d4gobert/devel/serenity/AK/URL.cpp:166:34: error: no matching function for call to ‘AK::LexicalPath::LexicalPath(const AK::String&)’
   166 |     LexicalPath lexical_path(path);
       |                                  ^
-In file included from /home/d4gobert/devel/serenity/AK/URL.cpp:10:
 /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:22:14: note: candidate: ‘AK::LexicalPath::LexicalPath(AK::DeprecatedString)’
    22 |     explicit LexicalPath(DeprecatedString);
       |              ^~~~~~~~~~~
@@ -142,13 +210,7 @@ In file included from /home/d4gobert/devel/serenity/AK/URL.cpp:12:
 /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:103:25: note: previous specification in ‘static AK::ErrorOr<AK::URL> AK::URL::create_with_data(AK::String, AK::String, bool)’ here
   103 |     static ErrorOr<URL> create_with_data(String mime_type, String payload, bool is_base64 = false);
       |                         ^~~~~~~~~~~~~~~~
-In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:9,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Optional.h:12,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/StringView.h:13,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/CheckedFormatString.h:12,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Format.h:9,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/DeprecatedString.h:9,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/LexicalPath.h:10:
+In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Try.h:9:
 /home/d4gobert/devel/serenity/AK/URL.cpp: In static member function ‘static AK::ErrorOr<AK::URL> AK::URL::create_with_data(AK::String, AK::String, bool)’:
 /home/d4gobert/devel/serenity/AK/URL.cpp:212:41: error: cannot convert ‘const char [5]’ to ‘AK::StringView’
   212 |     auto scheme = TRY(String::from_utf8("data"));
@@ -174,15 +236,6 @@ In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/URL.h:11
 /home/d4gobert/devel/serenity/AK/URL.cpp:212:10: error: ‘void scheme’ has incomplete type
   212 |     auto scheme = TRY(String::from_utf8("data"));
       |          ^~~~~~
-In file included from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Assertions.h:12,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/StdLibExtras.h:17,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Types.h:10,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/SinglyLinkedListSizePolicy.h:9,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Forward.h:10,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Iterator.h:9,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/Array.h:9,
-                 from /home/d4gobert/devel/serenity/Meta/Lagom/../../AK/CharacterTypes.h:10,
-                 from /home/d4gobert/devel/serenity/AK/URL.cpp:8:
 /home/d4gobert/devel/serenity/AK/URL.cpp: In member function ‘AK::ErrorOr<AK::String> AK::URL::serialize_data_url() const’:
 /home/d4gobert/devel/serenity/AK/URL.cpp:226:30: error: ‘const class AK::String’ has no member named ‘is_null’
   226 |     VERIFY(!m_data_mime_type.is_null());

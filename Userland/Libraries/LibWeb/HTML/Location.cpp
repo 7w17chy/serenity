@@ -291,6 +291,7 @@ WebIDL::ExceptionOr<String> Location::hash() const
 // https://html.spec.whatwg.org/multipage/nav-history-apis.html#dom-location-hash
 WebIDL::ExceptionOr<void> Location::set_hash(String const& value)
 {
+    auto& vm = this->vm;
     // The hash setter steps are:
     auto const relevant_document = this->relevant_document();
 
@@ -312,7 +313,7 @@ WebIDL::ExceptionOr<void> Location::set_hash(String const& value)
     copy_url.set_fragment("");
 
     // 6. Basic URL parse input, with copyURL as url and fragment state as state override.
-    auto result_url = URLParser::parse(input, nullptr, copy_url, URLParser::State::Fragment);
+    auto result_url = TRY_OR_THROW_OOM(vm, URLParser::parse(input, nullptr, copy_url, URLParser::State::Fragment));
 
     // 7. If copyURL's fragment is this's url's fragment, then return.
     if (copy_url.fragment() == this->url().fragment())

@@ -18,7 +18,7 @@ namespace AK {
 // FIXME: It could make sense to force users of URL to use URLParser::parse() explicitly instead of using a constructor.
 // NOTE: After porting everything to String, and the needed error handling, this FIXME is mandatory
 URL::URL(StringView string)
-    : URL(URLParser::parse(string))
+    : URL(MUST(URLParser::parse(string)))
 {
     if constexpr (URL_PARSER_DEBUG) {
         if (m_valid)

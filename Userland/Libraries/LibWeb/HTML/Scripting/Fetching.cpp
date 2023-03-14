@@ -163,7 +163,9 @@ WebIDL::ExceptionOr<Optional<AK::URL>> resolve_imports_match(DeprecatedString co
 
             // 6. If url is failure, then throw a TypeError indicating that resolution of normalizedSpecifier was blocked since the afterPrefix portion
             //    could not be URL-parsed relative to the resolutionResult mapped to by the specifierKey prefix.
-            if (!url.is_valid())
+            if (url.is_error())
+                return WebIDL::SimpleException { WebIDL::SimpleExceptionType::TypeError, String::formatted("Could not resolve '{}' as the after prefix portion could not be URL-parsed.", normalized_specifier).release_value_but_fixme_should_propagate_errors() };
+            else if (!url.value().is_valid())
                 return WebIDL::SimpleException { WebIDL::SimpleExceptionType::TypeError, String::formatted("Could not resolve '{}' as the after prefix portion could not be URL-parsed.", normalized_specifier).release_value_but_fixme_should_propagate_errors() };
 
             // 7. Assert: url is a URL.
@@ -192,7 +194,9 @@ Optional<AK::URL> resolve_url_like_module_specifier(DeprecatedString const& spec
         auto url = URLParser::parse(specifier, &base_url);
 
         // 2. If url is failure, then return null.
-        if (!url.is_valid())
+        if (url.is_error())
+            return {};
+        else if (!url.value().is_valid())
             return {};
 
         // 3. Return url.
@@ -203,7 +207,9 @@ Optional<AK::URL> resolve_url_like_module_specifier(DeprecatedString const& spec
     auto url = URLParser::parse(specifier);
 
     // 3. If url is failure, then return null.
-    if (!url.is_valid())
+    if (value.is_error())
+        return {};
+    else if (!url.value().is_valid())
         return {};
 
     // 4. Return url.

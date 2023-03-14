@@ -412,6 +412,6 @@ TEST_CASE(empty_url_with_base_url)
 {
     URL base_url { "https://foo.com/"sv };
     URL parsed_url = URLParser::parse(""sv, &base_url);
-    EXPECT_EQ(parsed_url.is_valid(), true);
+    EXPECT_EQ(parsed_url.value().is_valid(), true);
     EXPECT(base_url.equals(parsed_url));
 }

@@ -55,7 +55,7 @@ public:
         VERIFY_NOT_REACHED();
     }
 
-    static URL parse(StringView input, URL const* base_url = nullptr, Optional<URL> url = {}, Optional<State> state_override = {});
+    static ErrorOr<URL> parse(StringView input, URL const* base_url = nullptr, Optional<URL> url = {}, Optional<State> state_override = {});
 
 private:
     static ErrorOr<URL> parse_data_url(StringView raw_input);
