@@ -130,8 +130,7 @@ bool URL::compute_validity() const
             return false;
     }
 
-    // NOTE: A file URL's host should be the empty string for localhost, not null.
-    if (m_scheme == "file" && m_host.is_null())
+    if (m_scheme == "file" && m_host.is_empty())
         return false;
 
     return true;

@@ -206,8 +206,7 @@ ErrorOr<URL> URLParser::parse(StringView raw_input, URL const* base_url, Optiona
         return base_url ? *base_url : URL {};
 
     if (raw_input.starts_with("data:"sv)) {
-        auto maybe_url = TRY(parse_data_url(raw_input));
-        return maybe_url.release_value();
+        return parse_data_url(raw_input);
     }
 
     size_t start_index = 0;
@@ -239,7 +238,7 @@ ErrorOr<URL> URLParser::parse(StringView raw_input, URL const* base_url, Optiona
             report_validation_error();
     }
 
-    String processed_input = raw_input.substring_view(start_index, end_index - start_index);
+    DeprecatedString processed_input = raw_input.substring_view(start_index, end_index - start_index);
 
     // NOTE: This replaces all tab and newline characters with nothing.
     if (processed_input.contains("\t"sv) || processed_input.contains("\n"sv)) {
@@ -291,7 +290,7 @@ ErrorOr<URL> URLParser::parse(StringView raw_input, URL const* base_url, Optiona
             if (is_ascii_alphanumeric(code_point) || code_point == '+' || code_point == '-' || code_point == '.') {
                 buffer.append_as_lowercase(code_point);
             } else if (code_point == ':') {
-                url->m_scheme = buffer.to_deprecated_string();
+                url->m_scheme = TRY(buffer.to_string());
                 buffer.clear();
                 if (url->scheme() == "file") {
                     if (!get_remaining().starts_with("//"sv)) {
@@ -308,7 +307,7 @@ ErrorOr<URL> URLParser::parse(StringView raw_input, URL const* base_url, Optiona
                     ++iterator;
                 } else {
                     url->m_cannot_be_a_base_url = true;
-                    url->append_path("");
+                    url->append_path(String());
                     state = State::CannotBeABaseUrlPath;
                 }
             } else {
