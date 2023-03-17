@@ -97,9 +97,9 @@ public:
     String const& data_mime_type() const { return m_data_mime_type; }
     String const& data_payload() const { return m_data_payload; }
 
-    static ErrorOr<URL> create_with_url_or_path(String const&);
-    static ErrorOr<URL> create_with_file_scheme(String const& path, String const& fragment = {}, String const& hostname = {});
-    static ErrorOr<URL> create_with_help_scheme(String const& path, String const& fragment = {}, String const& hostname = {});
+    static URL create_with_url_or_path(String const&);
+    static URL create_with_file_scheme(String const& path, String const& fragment = {}, String const& hostname = {});
+    static URL create_with_help_scheme(String const& path, String const& fragment = {}, String const& hostname = {});
     static ErrorOr<URL> create_with_data(String mime_type, String payload, bool is_base64 = false);
 
     static bool scheme_requires_port(StringView);

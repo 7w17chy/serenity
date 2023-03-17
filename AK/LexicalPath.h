@@ -30,9 +30,7 @@ public:
     StringView extension() const { return m_extension; }
 
     Vector<StringView> const& parts_view() const { return m_parts; }
-    // FIXME: refactor those two methods into one once LexicalPath is migrated to String.
     [[nodiscard]] Vector<DeprecatedString> parts() const;
-    ErrorOr<Vector<String>> parts_string_remove_when_migrated() const;
 
     bool has_extension(StringView) const;
     bool is_child_of(LexicalPath const& possible_parent) const;

@@ -131,7 +131,7 @@ bool URL::compute_validity() const
     }
 
     // NOTE: A file URL's host should be the empty string for localhost, not null.
-    if (m_scheme == "file" && m_host.is_empty())
+    if (m_scheme == "file" && m_host.is_null())
         return false;
 
     return true;
@@ -161,60 +161,55 @@ u16 URL::default_port_for_scheme(StringView scheme)
     return 0;
 }
 
-ErrorOr<URL> URL::create_with_file_scheme(String const& path, String const& fragment, String const& hostname)
+URL URL::create_with_file_scheme(String const& path, String const& fragment, String const& hostname)
 {
-    LexicalPath lexical_path(path.to_deprecated_string());
+    LexicalPath lexical_path(path);
     if (!lexical_path.is_absolute())
-        return Error::from_string_literal("URL::create_with_file_scheme: The provided path must be absolute!");
+        return {};
 
     URL url;
-    url.set_scheme(TRY(String::from_utf8("file"sv)));
+    url.set_scheme("file");
     // NOTE: If the hostname is localhost (or null, which implies localhost), it should be set to the empty string.
     //       This is because a file URL always needs a non-null hostname.
-    url.set_host(hostname.is_empty() || hostname == "localhost" ? String() : hostname);
-
-    url.set_paths(TRY(lexical_path.parts_string_remove_when_migrated()));
-
+    url.set_host(hostname.is_null() || hostname == "localhost" ? String::empty() : hostname);
+    url.set_paths(lexical_path.parts());
     // NOTE: To indicate that we want to end the path with a slash, we have to append an empty path segment.
     if (path.ends_with('/'))
-        url.append_path(String());
+        url.append_path("");
     url.set_fragment(fragment);
     return url;
 }
 
-ErrorOr<URL> URL::create_with_help_scheme(String const& path, String const& fragment, String const& hostname)
+URL URL::create_with_help_scheme(String const& path, String const& fragment, String const& hostname)
 {
-    LexicalPath lexical_path(path.to_deprecated_string());
+    LexicalPath lexical_path(path);
 
     URL url;
-    url.set_scheme(TRY(String::from_utf8("help"sv)));
+    url.set_scheme("help");
     // NOTE: If the hostname is localhost (or null, which implies localhost), it should be set to the empty string.
     //       This is because a file URL always needs a non-null hostname.
-    url.set_host(hostname.is_empty() || hostname == "localhost" ? String() : hostname);
-
-    url.set_paths(TRY(lexical_path.parts_string_remove_when_migrated()));
-
+    url.set_host(hostname.is_null() || hostname == "localhost" ? String::empty() : hostname);
+    url.set_paths(lexical_path.parts());
     // NOTE: To indicate that we want to end the path with a slash, we have to append an empty path segment.
     if (path.ends_with('/'))
-        url.append_path(String());
+        url.append_path("");
     url.set_fragment(fragment);
     return url;
 }
 
-ErrorOr<URL> URL::create_with_url_or_path(String const& url_or_path)
+URL URL::create_with_url_or_path(String const& url_or_path)
 {
     URL url = url_or_path;
     if (url.is_valid())
         return url;
 
-    String path =
-        TRY(String::from_deprecated_string(LexicalPath::canonicalized_path(url_or_path.to_deprecated_string())));
+    String path = LexicalPath::canonicalized_path(url_or_path);
     return URL::create_with_file_scheme(path);
 }
 
-ErrorOr<URL> URL::create_with_data(String mime_type, String payload, bool is_base64)
+ErrorOr<URL> URL::create_with_data(String mime_type, String payload, bool is_base64 = false)
 {
-    auto scheme = TRY(String::from_utf8("data"sv));
+    auto scheme = TRY(String::from_utf8("data"));
     return URL(move(mime_type), move(payload), move(scheme), is_base64);
 }
 
@@ -228,8 +223,8 @@ bool URL::is_special_scheme(StringView scheme)
 ErrorOr<String> URL::serialize_data_url() const
 {
     VERIFY(m_scheme == "data");
-    VERIFY(!m_data_mime_type.is_empty());
-    VERIFY(!m_data_payload.is_empty());
+    VERIFY(!m_data_mime_type.is_null());
+    VERIFY(!m_data_payload.is_null());
     StringBuilder builder;
     builder.append(m_scheme);
     builder.append(':');
@@ -252,7 +247,7 @@ ErrorOr<String> URL::serialize(ExcludeFragment exclude_fragment) const
     builder.append(m_scheme);
     builder.append(':');
 
-    if (!m_host.is_empty()) {
+    if (!m_host.is_null()) {
         builder.append("//"sv);
 
         if (includes_credentials()) {
@@ -272,7 +267,7 @@ ErrorOr<String> URL::serialize(ExcludeFragment exclude_fragment) const
     if (cannot_be_a_base_url()) {
         builder.append(TRY(percent_encode(m_paths[0], PercentEncodeSet::Path)));
     } else {
-        if (m_host.is_empty() && m_paths.size() > 1 && m_paths[0].is_empty())
+        if (m_host.is_null() && m_paths.size() > 1 && m_paths[0].is_empty())
             builder.append("/."sv);
         for (auto& segment : m_paths) {
             builder.append('/');
@@ -280,12 +275,12 @@ ErrorOr<String> URL::serialize(ExcludeFragment exclude_fragment) const
         }
     }
 
-    if (!m_query.is_empty()) {
+    if (!m_query.is_null()) {
         builder.append('?');
         builder.append(TRY(percent_encode(m_query, is_special() ? URL::PercentEncodeSet::SpecialQuery : URL::PercentEncodeSet::Query)));
     }
 
-    if (exclude_fragment == ExcludeFragment::No && !m_fragment.is_empty()) {
+    if (exclude_fragment == ExcludeFragment::No && !m_fragment.is_null()) {
         builder.append('#');
         builder.append(TRY(percent_encode(m_fragment, PercentEncodeSet::Fragment)));
     }
@@ -306,7 +301,7 @@ ErrorOr<String> URL::serialize_for_display() const
     builder.append(m_scheme);
     builder.append(':');
 
-    if (!m_host.is_empty()) {
+    if (!m_host.is_null()) {
         builder.append("//"sv);
         builder.append(m_host);
         if (m_port.has_value())
@@ -316,7 +311,7 @@ ErrorOr<String> URL::serialize_for_display() const
     if (cannot_be_a_base_url()) {
         builder.append(TRY(percent_encode(m_paths[0], PercentEncodeSet::Path)));
     } else {
-        if (m_host.is_empty() && m_paths.size() > 1 && m_paths[0].is_empty())
+        if (m_host.is_null() && m_paths.size() > 1 && m_paths[0].is_empty())
             builder.append("/."sv);
         for (auto& segment : m_paths) {
             builder.append('/');
@@ -324,12 +319,12 @@ ErrorOr<String> URL::serialize_for_display() const
         }
     }
 
-    if (!m_query.is_empty()) {
+    if (!m_query.is_null()) {
         builder.append('?');
         builder.append(TRY(percent_encode(m_query, is_special() ? URL::PercentEncodeSet::SpecialQuery : URL::PercentEncodeSet::Query)));
     }
 
-    if (!m_fragment.is_empty()) {
+    if (!m_fragment.is_null()) {
         builder.append('#');
         builder.append(TRY(percent_encode(m_fragment, PercentEncodeSet::Fragment)));
     }
@@ -340,9 +335,9 @@ ErrorOr<String> URL::serialize_for_display() const
 // NOTE: needed for hashing.
 // FIXME: there's no way for us to handle the error properly since Traits<URL>::hash doesn't
 //        allow us to propagate it.
-DeprecatedString URL::to_deprecated_string() const
+DeprecatedString to_deprecated_string() const
 {
-    auto result = MUST(this->serialize());
+    auto result = MUST(serialize());
     return result.to_deprecated_string();
 }
 
@@ -359,10 +354,10 @@ ErrorOr<String> URL::serialize_origin() const
         URL url = m_paths[0];
         // 3. Return a new opaque origin, if url is failure, and url’s origin otherwise.
         if (!url.is_valid())
-            return String::from_utf8("null"sv);
+            return "null";
         return url.serialize_origin();
     } else if (!m_scheme.is_one_of("ftp"sv, "http"sv, "https"sv, "ws"sv, "wss"sv)) { // file: "Unfortunate as it is, this is left as an exercise to the reader. When in doubt, return a new opaque origin."
-        return String::from_utf8("null"sv);
+        return "null";
     }
 
     StringBuilder builder;
@@ -374,21 +369,21 @@ ErrorOr<String> URL::serialize_origin() const
     return builder.to_string();
 }
 
-bool URL::equals(URL const& other, ExcludeFragment exclude_fragments) const
+ErrorOr<bool> URL::equals(URL const& other, ExcludeFragment exclude_fragments) const
 {
     if (this == &other)
         return true;
     if (!m_valid || !other.m_valid)
         return false;
-    return MUST(serialize(exclude_fragments)) == MUST(other.serialize(exclude_fragments));
+    return TRY(serialize(exclude_fragments)) == TRY(other.serialize(exclude_fragments));
 }
 
 ErrorOr<String> URL::basename() const
 {
     if (!m_valid)
-        return Error::from_string_literal("URL::basename: Invalid URL");
+        return {};
     if (m_paths.is_empty())
-        return Error::from_string_literal("URL::basename: Empty URL");
+        return {};
     return m_paths.last();
 }
 
@@ -459,7 +454,7 @@ ErrorOr<String> URL::percent_encode(StringView input, URL::PercentEncodeSet set,
 ErrorOr<String> URL::percent_decode(StringView input)
 {
     if (!input.contains('%'))
-        return String::from_utf8(input);
+        return input;
     StringBuilder builder;
     Utf8View utf8_view(input);
     for (auto it = utf8_view.begin(); !it.done(); ++it) {
