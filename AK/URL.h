@@ -97,9 +97,16 @@ public:
     String const& data_mime_type() const { return m_data_mime_type; }
     String const& data_payload() const { return m_data_payload; }
 
-    static URL create_with_url_or_path(String const&);
-    static URL create_with_file_scheme(String const& path, String const& fragment = {}, String const& hostname = {});
-    static URL create_with_help_scheme(String const& path, String const& fragment = {}, String const& hostname = {});
+    // FIXME: Remove those, once depending clients have been migrated too.
+    //        When writing new code, use the throwing methods below!
+    static URL create_with_url_or_path_deprecated(DeprecatedString const&);
+    static URL create_with_file_scheme_deprecated(DeprecatedString const& path, DeprecatedString const& fragment = {}, DeprecatedString const& hostname = {});
+    static URL create_with_help_scheme_deprecated(DeprecatedString const& path, DeprecatedString const& fragment = {}, DeprecatedString const& hostname = {});
+    static URL create_with_data_deprecated(DeprecatedString mime_type, DeprecatedString payload, bool is_base64 = false);
+
+    static ErrorOr<URL> create_with_url_or_path(String const&);
+    static ErrorOr<URL> create_with_file_scheme(String const& path, String const& fragment, Optional<String const&> hostname = {});
+    static ErrorOr<URL> create_with_help_scheme(String const& path, String const& fragment = {}, Optional<String const&> hostname = {});
     static ErrorOr<URL> create_with_data(String mime_type, String payload, bool is_base64 = false);
 
     static bool scheme_requires_port(StringView);
@@ -118,6 +125,17 @@ public:
     static bool code_point_is_in_percent_encode_set(u32 code_point, URL::PercentEncodeSet);
 
 private:
+    // FIXME: Remove this once depending clients have been migrated to the new
+    //        String class.
+    URL(DeprecatedString&& data_mime_type, DeprecatedString&& data_payload, DeprecatedString&& scheme, bool payload_is_base64)
+        : m_valid(true)
+        , m_scheme(MUST(String::from_deprecated_string(scheme)))
+        , m_data_payload_is_base64(payload_is_base64)
+        , m_data_mime_type(MUST(String::from_deprecated_string(data_mime_type)))
+        , m_data_payload(MUST(String::from_deprecated_string(data_payload)))
+    {
+    }
+
     URL(String&& data_mime_type, String&& data_payload, String&& scheme, bool payload_is_base64)
         : m_valid(true)
         , m_scheme(scheme)

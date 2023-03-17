@@ -161,50 +161,95 @@ u16 URL::default_port_for_scheme(StringView scheme)
     return 0;
 }
 
-URL URL::create_with_file_scheme(String const& path, String const& fragment, String const& hostname)
+URL URL::create_with_file_scheme_deprecated(DeprecatedString const& path, DeprecatedString const& fragment, DeprecatedString const& hostname)
 {
-    LexicalPath lexical_path(path);
+    return MUST(URL::create_with_file_scheme(
+                MUST(String::from_deprecated_string(path)),
+                MUST(String::from_deprecated_string(fragment)),
+                MUST(String::from_deprecated_string(hostname))));
+}
+
+URL URL::create_with_help_scheme_deprecated(DeprecatedString const& path, DeprecatedString const& fragment, DeprecatedString const& hostname)
+{
+    return MUST(URL::create_with_help_scheme(
+                MUST(String::from_deprecated_string(path)),
+                MUST(String::from_deprecated_string(fragment)),
+                hostname.is_null() ? Optional<String const&> {} : MUST(String::from_deprecated_string(hostname))));
+}
+
+URL URL::create_with_url_or_path_deprecated(DeprecatedString const& url_or_path)
+{
+    return MUST(URL::create_with_url_or_path(
+                MUST(String::from_deprecated_string(url_or_path))));
+}
+
+URL URL::create_with_data_deprecated(DeprecatedString mime_type, DeprecatedString payload, bool is_base64)
+{
+    return MUST(URL::create_with_data(
+                MUST(String::from_deprecated_string(mime_type)),
+                MUST(String::from_deprecated_string(payload)),
+                is_base64));
+}
+
+ErrorOr<URL> URL::create_with_file_scheme(String const& path, String const& fragment, Optional<String const&> hostname)
+{
+    LexicalPath lexical_path(path.to_deprecated_string());
     if (!lexical_path.is_absolute())
-        return {};
+        return Error::from_string_literal("URL::create_with_file_scheme: Path must be absolute!");
 
     URL url;
-    url.set_scheme("file");
+    url.set_scheme(TRY(String::from_utf8("file"sv)));
+
     // NOTE: If the hostname is localhost (or null, which implies localhost), it should be set to the empty string.
     //       This is because a file URL always needs a non-null hostname.
-    url.set_host(hostname.is_null() || hostname == "localhost" ? String::empty() : hostname);
+    if (hostname.has_value()) {
+        if (hostname.value() == "localhost") {
+            url.set_host(String());
+        } else {
+            url.set_host(hostname.value());
+        }
+    } else {
+        url.set_host(String());
+    }
+
     url.set_paths(lexical_path.parts());
     // NOTE: To indicate that we want to end the path with a slash, we have to append an empty path segment.
     if (path.ends_with('/'))
-        url.append_path("");
+        url.append_path(String());
     url.set_fragment(fragment);
     return url;
 }
 
-URL URL::create_with_help_scheme(String const& path, String const& fragment, String const& hostname)
+ErrorOr<URL> URL::create_with_help_scheme(String const& path, String const& fragment, Optional<String const&> hostname)
 {
-    LexicalPath lexical_path(path);
+    LexicalPath lexical_path(path.to_deprecated_string());
 
     URL url;
-    url.set_scheme("help");
+    url.set_scheme(TRY(String::from_utf8("help"sv)));
     // NOTE: If the hostname is localhost (or null, which implies localhost), it should be set to the empty string.
     //       This is because a file URL always needs a non-null hostname.
-    url.set_host(hostname.is_null() || hostname == "localhost" ? String::empty() : hostname);
+    auto host = hostname.value_or(String());
+    if (host == "localhost")
+        url.set_host(String());
+    else 
+        url.set_host(host);
+
     url.set_paths(lexical_path.parts());
     // NOTE: To indicate that we want to end the path with a slash, we have to append an empty path segment.
     if (path.ends_with('/'))
-        url.append_path("");
+        url.append_path(String());
     url.set_fragment(fragment);
     return url;
 }
 
-URL URL::create_with_url_or_path(String const& url_or_path)
+ErrorOr<URL> URL::create_with_url_or_path(String const& url_or_path)
 {
     URL url = url_or_path;
     if (url.is_valid())
         return url;
 
-    String path = LexicalPath::canonicalized_path(url_or_path);
-    return URL::create_with_file_scheme(path);
+    auto path = LexicalPath::canonicalized_path(url_or_path.to_deprecated_string());
+    return URL::create_with_file_scheme(TRY(String::from_utf8(path)));
 }
 
 ErrorOr<URL> URL::create_with_data(String mime_type, String payload, bool is_base64 = false)
@@ -212,7 +257,6 @@ ErrorOr<URL> URL::create_with_data(String mime_type, String payload, bool is_bas
     auto scheme = TRY(String::from_utf8("data"));
     return URL(move(mime_type), move(payload), move(scheme), is_base64);
 }
-
 
 // https://url.spec.whatwg.org/#special-scheme
 bool URL::is_special_scheme(StringView scheme)
