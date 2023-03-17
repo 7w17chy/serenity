@@ -30,6 +30,8 @@ public:
 
     AK::URL const& url() const { return m_url; }
 
+    String const& handle() const { return m_client_state.client_handle; }
+
     void load(AK::URL const&);
     void load_html(StringView, AK::URL const&);
     void load_empty_document();
@@ -96,6 +98,7 @@ public:
     virtual DeprecatedString notify_server_did_request_cookie(Badge<WebContentClient>, const AK::URL& url, Web::Cookie::Source source) = 0;
     virtual void notify_server_did_set_cookie(Badge<WebContentClient>, const AK::URL& url, Web::Cookie::ParsedCookie const& cookie, Web::Cookie::Source source) = 0;
     virtual void notify_server_did_update_cookie(Badge<WebContentClient>, Web::Cookie::Cookie const& cookie) = 0;
+    virtual String notify_request_open_new_tab(Badge<WebContentClient>) = 0;
     virtual void notify_server_did_close_browsing_context(Badge<WebContentClient>) = 0;
     virtual void notify_server_did_update_resource_count(i32 count_waiting) = 0;
     virtual void notify_server_did_request_restore_window() = 0;
@@ -118,7 +121,7 @@ protected:
     virtual void update_zoom() = 0;
 
 #if !defined(AK_OS_SERENITY)
-    ErrorOr<NonnullRefPtr<WebView::WebContentClient>> launch_web_content_process(ReadonlySpan<String> candidate_web_content_paths, StringView webdriver_content_ipc_path);
+    ErrorOr<NonnullRefPtr<WebView::WebContentClient>> launch_web_content_process(ReadonlySpan<String> candidate_web_content_paths);
 #endif
 
     struct SharedBitmap {
@@ -129,6 +132,7 @@ protected:
 
     struct ClientState {
         RefPtr<WebContentClient> client;
+        String client_handle;
         SharedBitmap front_bitmap;
         SharedBitmap back_bitmap;
         i32 next_bitmap_id { 0 };

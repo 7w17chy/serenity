@@ -43,6 +43,7 @@ public:
     Web::DevicePixelSize content_size() const { return m_content_size; }
 
     ErrorOr<void> connect_to_webdriver(DeprecatedString const& webdriver_ipc_path);
+    Function<void(WebDriverConnection&)> on_webdriver_connection;
 
     void alert_closed();
     void confirm_closed(bool accepted);
@@ -97,6 +98,7 @@ private:
     virtual void page_did_set_cookie(const URL&, Web::Cookie::ParsedCookie const&, Web::Cookie::Source) override;
     virtual void page_did_update_cookie(Web::Cookie::Cookie) override;
     virtual void page_did_update_resource_count(i32) override;
+    virtual String page_did_request_new_tab() override;
     virtual void page_did_close_browsing_context(Web::HTML::BrowsingContext const&) override;
     virtual void request_file(Web::FileRequest) override;
 

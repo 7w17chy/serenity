@@ -255,7 +255,9 @@ public:
 
     DeprecatedString name;
     DeprecatedString parent_name;
+    DeprecatedString namespaced_name;
 
+    bool is_namespace { false };
     bool is_mixin { false };
 
     HashMap<DeprecatedString, DeprecatedString> extended_attributes;
@@ -291,6 +293,7 @@ public:
     DeprecatedString constructor_class;
     DeprecatedString prototype_class;
     DeprecatedString prototype_base_class;
+    DeprecatedString namespace_class;
     DeprecatedString global_mixin_class;
     HashMap<DeprecatedString, HashTable<DeprecatedString>> included_mixins;
 

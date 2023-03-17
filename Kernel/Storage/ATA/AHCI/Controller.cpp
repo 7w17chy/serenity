@@ -18,14 +18,14 @@
 
 namespace Kernel {
 
-UNMAP_AFTER_INIT NonnullLockRefPtr<AHCIController> AHCIController::initialize(PCI::DeviceIdentifier const& pci_device_identifier)
+UNMAP_AFTER_INIT ErrorOr<NonnullRefPtr<AHCIController>> AHCIController::initialize(PCI::DeviceIdentifier const& pci_device_identifier)
 {
-    auto controller = adopt_lock_ref_if_nonnull(new (nothrow) AHCIController(pci_device_identifier)).release_nonnull();
-    controller->initialize_hba(pci_device_identifier);
+    auto controller = adopt_ref_if_nonnull(new (nothrow) AHCIController(pci_device_identifier)).release_nonnull();
+    TRY(controller->initialize_hba(pci_device_identifier));
     return controller;
 }
 
-bool AHCIController::reset()
+ErrorOr<void> AHCIController::reset()
 {
     dmesgln_pci(*this, "{}: AHCI controller reset", device_identifier().address());
     {
@@ -40,7 +40,7 @@ bool AHCIController::reset()
         // Note: The HBA is locked or hung if we waited more than 1 second!
         while (true) {
             if (retry > 1000)
-                return false;
+                return Error::from_errno(ETIMEDOUT);
             if (!(hba().control_regs.ghc & 1))
                 break;
             microseconds_delay(1000);
@@ -67,12 +67,12 @@ bool AHCIController::reset()
         m_ports[index] = port;
         port->reset();
     }
-    return true;
+    return {};
 }
 
-bool AHCIController::shutdown()
+ErrorOr<void> AHCIController::shutdown()
 {
-    TODO();
+    return Error::from_errno(ENOTIMPL);
 }
 
 size_t AHCIController::devices_count() const
@@ -106,18 +106,16 @@ volatile AHCI::PortRegisters& AHCIController::port(size_t port_number) const
 
 volatile AHCI::HBA& AHCIController::hba() const
 {
-    return static_cast<volatile AHCI::HBA&>(*(volatile AHCI::HBA*)(m_hba_region->vaddr().as_ptr()));
+    return const_cast<AHCI::HBA&>(*m_hba_mapping);
 }
 
 UNMAP_AFTER_INIT AHCIController::AHCIController(PCI::DeviceIdentifier const& pci_device_identifier)
     : ATAController()
     , PCI::Device(const_cast<PCI::DeviceIdentifier&>(pci_device_identifier))
-    , m_hba_region(default_hba_region())
-    , m_hba_capabilities(capabilities())
 {
 }
 
-AHCI::HBADefinedCapabilities AHCIController::capabilities() const
+UNMAP_AFTER_INIT AHCI::HBADefinedCapabilities AHCIController::capabilities() const
 {
     u32 capabilities = hba().control_regs.cap;
     u32 extended_capabilities = hba().control_regs.cap2;
@@ -154,15 +152,18 @@ AHCI::HBADefinedCapabilities AHCIController::capabilities() const
     };
 }
 
-UNMAP_AFTER_INIT NonnullOwnPtr<Memory::Region> AHCIController::default_hba_region() const
+UNMAP_AFTER_INIT ErrorOr<Memory::TypedMapping<AHCI::HBA volatile>> AHCIController::map_default_hba_region(PCI::DeviceIdentifier const& pci_device_identifier)
 {
-    return MM.allocate_kernel_region(PhysicalAddress(PCI::get_BAR5(device_identifier())).page_base(), Memory::page_round_up(sizeof(AHCI::HBA)).release_value_but_fixme_should_propagate_errors(), "AHCI HBA"sv, Memory::Region::Access::ReadWrite).release_value();
+    return Memory::map_typed_writable<AHCI::HBA volatile>(PhysicalAddress(PCI::get_BAR5(pci_device_identifier)));
 }
 
 AHCIController::~AHCIController() = default;
 
-UNMAP_AFTER_INIT void AHCIController::initialize_hba(PCI::DeviceIdentifier const& pci_device_identifier)
+UNMAP_AFTER_INIT ErrorOr<void> AHCIController::initialize_hba(PCI::DeviceIdentifier const& pci_device_identifier)
 {
+    m_hba_mapping = TRY(map_default_hba_region(pci_device_identifier));
+    m_hba_capabilities = capabilities();
+
     u32 version = hba().control_regs.version;
 
     hba().control_regs.ghc = 0x80000000; // Ensure that HBA knows we are AHCI aware.
@@ -172,9 +173,12 @@ UNMAP_AFTER_INIT void AHCIController::initialize_hba(PCI::DeviceIdentifier const
 
     auto implemented_ports = AHCI::MaskedBitField((u32 volatile&)(hba().control_regs.pi));
     m_irq_handler = AHCIInterruptHandler::create(*this, pci_device_identifier.interrupt_line().value(), implemented_ports).release_value_but_fixme_should_propagate_errors();
-    reset();
+    TRY(reset());
+
     dbgln_if(AHCI_DEBUG, "{}: AHCI Controller Version = {:#08x}", device_identifier().address(), version);
     dbgln("{}: AHCI command list entries count - {}", device_identifier().address(), m_hba_capabilities.max_command_list_entries_count);
+
+    return {};
 }
 
 void AHCIController::handle_interrupt_for_port(Badge<AHCIInterruptHandler>, u32 port_index) const

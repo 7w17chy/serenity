@@ -111,7 +111,10 @@ UNMAP_AFTER_INIT void StorageManagement::enumerate_pci_controllers(bool force_pi
 
             if (subclass_code == SubclassID::SATAController
                 && device_identifier.prog_if().value() == to_underlying(PCI::MassStorage::SATAProgIF::AHCI)) {
-                m_controllers.append(AHCIController::initialize(device_identifier));
+                if (auto ahci_controller_or_error = AHCIController::initialize(device_identifier); !ahci_controller_or_error.is_error())
+                    m_controllers.append(ahci_controller_or_error.value());
+                else
+                    dmesgln("Unable to initialize AHCI controller: {}", ahci_controller_or_error.error());
             }
             if (subclass_code == SubclassID::NVMeController) {
                 auto controller = NVMeController::try_initialize(device_identifier, nvme_poll);
@@ -444,7 +447,12 @@ UNMAP_AFTER_INIT void StorageManagement::initialize(StringView root_device, bool
     }
     // Note: Whether PCI bus is present on the system or not, always try to attach
     // a given ramdisk.
-    m_controllers.append(RamdiskController::initialize());
+    auto controller = RamdiskController::try_initialize();
+    if (controller.is_error()) {
+        dmesgln("Unable to initialize RAM controller: {}", controller.error());
+    } else {
+        m_controllers.append(controller.release_value());
+    }
     enumerate_storage_devices();
     enumerate_disk_partitions();
 

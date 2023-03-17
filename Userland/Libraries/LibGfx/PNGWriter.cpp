@@ -7,9 +7,9 @@
  */
 
 #include <AK/Concepts.h>
-#include <AK/DeprecatedString.h>
 #include <AK/FixedArray.h>
 #include <AK/SIMDExtras.h>
+#include <AK/String.h>
 #include <LibCompress/Zlib.h>
 #include <LibCrypto/Checksum/CRC32.h>
 #include <LibGfx/Bitmap.h>
@@ -23,51 +23,47 @@ class PNGChunk {
     using data_length_type = u32;
 
 public:
-    explicit PNGChunk(DeprecatedString);
+    explicit PNGChunk(String);
     auto const& data() const { return m_data; };
-    DeprecatedString const& type() const { return m_type; };
+    String const& type() const { return m_type; };
     ErrorOr<void> reserve(size_t bytes) { return m_data.try_ensure_capacity(bytes); }
 
     template<typename T>
     ErrorOr<void> add_as_big_endian(T);
 
-    template<typename T>
-    ErrorOr<void> add_as_little_endian(T);
-
     ErrorOr<void> add_u8(u8);
 
-    template<typename T>
-    ErrorOr<void> add(T*, size_t);
+    ErrorOr<void> compress_and_add(ReadonlyBytes);
+    ErrorOr<void> add(ReadonlyBytes);
 
     ErrorOr<void> store_type();
     void store_data_length();
     u32 crc();
 
 private:
-    template<Unsigned T>
-    ErrorOr<void> add(T);
-
     ByteBuffer m_data;
-    DeprecatedString m_type;
+    String m_type;
 };
 
-PNGChunk::PNGChunk(DeprecatedString type)
+PNGChunk::PNGChunk(String type)
     : m_type(move(type))
 {
+    VERIFY(m_type.bytes().size() == 4);
+
     // NOTE: These are MUST() because they should always be able to fit in m_data's inline capacity.
-    MUST(add<data_length_type>(0));
+    MUST(add_as_big_endian<data_length_type>(0));
     MUST(store_type());
 }
 
 ErrorOr<void> PNGChunk::store_type()
 {
-    TRY(m_data.try_append(type().bytes()));
+    TRY(add(type().bytes()));
     return {};
 }
 
 void PNGChunk::store_data_length()
 {
-    auto data_length = BigEndian<u32>(m_data.size() - sizeof(data_length_type) - m_type.length());
+    auto data_length = BigEndian<u32>(m_data.size() - sizeof(data_length_type) - m_type.bytes().size());
     __builtin_memcpy(m_data.offset_pointer(0), &data_length, sizeof(u32));
 }
 
@@ -77,25 +73,14 @@ u32 PNGChunk::crc()
     return crc;
 }
 
-template<Unsigned T>
-ErrorOr<void> PNGChunk::add(T data)
+ErrorOr<void> PNGChunk::compress_and_add(ReadonlyBytes uncompressed_bytes)
 {
-    TRY(m_data.try_append(&data, sizeof(T)));
-    return {};
+    return add(TRY(Compress::ZlibCompressor::compress_all(uncompressed_bytes, Compress::ZlibCompressionLevel::Best)));
 }
 
-template<typename T>
-ErrorOr<void> PNGChunk::add(T* data, size_t size)
+ErrorOr<void> PNGChunk::add(ReadonlyBytes bytes)
 {
-    TRY(m_data.try_append(data, size));
-    return {};
-}
-
-template<typename T>
-ErrorOr<void> PNGChunk::add_as_little_endian(T data)
-{
-    auto data_out = AK::convert_between_host_and_little_endian(data);
-    TRY(add(data_out));
+    TRY(m_data.try_append(bytes));
     return {};
 }
 
@@ -103,13 +88,13 @@ template<typename T>
 ErrorOr<void> PNGChunk::add_as_big_endian(T data)
 {
     auto data_out = AK::convert_between_host_and_big_endian(data);
-    TRY(add(data_out));
+    TRY(m_data.try_append(&data_out, sizeof(T)));
     return {};
 }
 
 ErrorOr<void> PNGChunk::add_u8(u8 data)
 {
-    TRY(add(data));
+    TRY(m_data.try_append(data));
     return {};
 }
 
@@ -130,7 +115,7 @@ ErrorOr<void> PNGWriter::add_png_header()
 
 ErrorOr<void> PNGWriter::add_IHDR_chunk(u32 width, u32 height, u8 bit_depth, PNG::ColorType color_type, u8 compression_method, u8 filter_method, u8 interlace_method)
 {
-    PNGChunk png_chunk { "IHDR" };
+    PNGChunk png_chunk { "IHDR"_short_string };
     TRY(png_chunk.add_as_big_endian(width));
     TRY(png_chunk.add_as_big_endian(height));
     TRY(png_chunk.add_u8(bit_depth));
@@ -142,9 +127,24 @@ ErrorOr<void> PNGWriter::add_IHDR_chunk(u32 width, u32 height, u8 bit_depth, PNG
     return {};
 }
 
+ErrorOr<void> PNGWriter::add_iCCP_chunk(ReadonlyBytes icc_data)
+{
+    // https://www.w3.org/TR/png/#11iCCP
+    PNGChunk chunk { "iCCP"_short_string };
+
+    TRY(chunk.add("embedded profile"sv.bytes()));
+    TRY(chunk.add_u8(0)); // \0-terminate profile name
+
+    TRY(chunk.add_u8(0)); // compression method deflate
+    TRY(chunk.compress_and_add(icc_data));
+
+    TRY(add_chunk(chunk));
+    return {};
+}
+
 ErrorOr<void> PNGWriter::add_IEND_chunk()
 {
-    PNGChunk png_chunk { "IEND" };
+    PNGChunk png_chunk { "IEND"_short_string };
     TRY(add_chunk(png_chunk));
     return {};
 }
@@ -169,7 +169,7 @@ static_assert(AssertSize<Pixel, 4>());
 
 ErrorOr<void> PNGWriter::add_IDAT_chunk(Gfx::Bitmap const& bitmap)
 {
-    PNGChunk png_chunk { "IDAT" };
+    PNGChunk png_chunk { "IDAT"_short_string };
     TRY(png_chunk.reserve(bitmap.size_in_bytes()));
 
     ByteBuffer uncompressed_block_data;
@@ -264,18 +264,18 @@ ErrorOr<void> PNGWriter::add_IDAT_chunk(Gfx::Bitmap const& bitmap)
         TRY(uncompressed_block_data.try_append(best_filter.buffer));
     }
 
-    auto zlib_buffer = TRY(Compress::ZlibCompressor::compress_all(uncompressed_block_data, Compress::ZlibCompressionLevel::Best));
-
-    TRY(png_chunk.add(zlib_buffer.data(), zlib_buffer.size()));
+    TRY(png_chunk.compress_and_add(uncompressed_block_data));
     TRY(add_chunk(png_chunk));
     return {};
 }
 
-ErrorOr<ByteBuffer> PNGWriter::encode(Gfx::Bitmap const& bitmap)
+ErrorOr<ByteBuffer> PNGWriter::encode(Gfx::Bitmap const& bitmap, Options options)
 {
     PNGWriter writer;
     TRY(writer.add_png_header());
     TRY(writer.add_IHDR_chunk(bitmap.width(), bitmap.height(), 8, PNG::ColorType::TruecolorWithAlpha, 0, 0, 0));
+    if (options.icc_data.has_value())
+        TRY(writer.add_iCCP_chunk(options.icc_data.value()));
     TRY(writer.add_IDAT_chunk(bitmap));
     TRY(writer.add_IEND_chunk());
     return ByteBuffer::copy(writer.m_data);

@@ -93,6 +93,10 @@ ErrorOr<void> PageHost::connect_to_webdriver(DeprecatedString const& webdriver_i
 {
     VERIFY(!m_webdriver);
     m_webdriver = TRY(WebDriverConnection::connect(*this, webdriver_ipc_path));
+
+    if (on_webdriver_connection)
+        on_webdriver_connection(*m_webdriver);
+
     return {};
 }
 
@@ -371,6 +375,11 @@ void PageHost::page_did_update_cookie(Web::Cookie::Cookie cookie)
 void PageHost::page_did_update_resource_count(i32 count_waiting)
 {
     m_client.async_did_update_resource_count(count_waiting);
+}
+
+String PageHost::page_did_request_new_tab()
+{
+    return m_client.did_request_new_tab();
 }
 
 void PageHost::page_did_close_browsing_context(Web::HTML::BrowsingContext const&)

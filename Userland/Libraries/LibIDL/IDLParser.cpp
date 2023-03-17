@@ -592,10 +592,42 @@ void Parser::parse_interface(Interface& interface)
         parse_function(extended_attributes, interface);
     }
 
+    if (auto legacy_namespace = interface.extended_attributes.get("LegacyNamespace"sv); legacy_namespace.has_value())
+        interface.namespaced_name = DeprecatedString::formatted("{}.{}", *legacy_namespace, interface.name);
+    else
+        interface.namespaced_name = interface.name;
+
     interface.constructor_class = DeprecatedString::formatted("{}Constructor", interface.name);
     interface.prototype_class = DeprecatedString::formatted("{}Prototype", interface.name);
     interface.prototype_base_class = DeprecatedString::formatted("{}Prototype", interface.parent_name.is_empty() ? "Object" : interface.parent_name);
     interface.global_mixin_class = DeprecatedString::formatted("{}GlobalMixin", interface.name);
+    consume_whitespace();
+}
+
+void Parser::parse_namespace(Interface& interface)
+{
+    consume_whitespace();
+
+    interface.name = lexer.consume_until([](auto ch) { return is_ascii_space(ch); });
+    interface.is_namespace = true;
+
+    consume_whitespace();
+    assert_specific('{');
+
+    for (;;) {
+        consume_whitespace();
+
+        if (lexer.consume_specific('}')) {
+            consume_whitespace();
+            assert_specific(';');
+            break;
+        }
+
+        HashMap<DeprecatedString, DeprecatedString> extended_attributes;
+        parse_function(extended_attributes, interface);
+    }
+
+    interface.namespace_class = DeprecatedString::formatted("{}Namespace", interface.name);
     consume_whitespace();
 }
 
@@ -700,9 +732,10 @@ void Parser::parse_dictionary(Interface& interface)
         if (lexer.consume_specific("required")) {
             required = true;
             consume_whitespace();
-            if (lexer.consume_specific('['))
-                extended_attributes = parse_extended_attributes();
         }
+
+        if (lexer.consume_specific('['))
+            extended_attributes = parse_extended_attributes();
 
         auto type = parse_type();
         consume_whitespace();
@@ -802,7 +835,7 @@ void Parser::parse_non_interface_entities(bool allow_interface, Interface& inter
             parse_interface_mixin(interface);
         } else if (lexer.next_is("callback")) {
             parse_callback_function(extended_attributes, interface);
-        } else if ((allow_interface && !lexer.next_is("interface")) || !allow_interface) {
+        } else if ((allow_interface && !lexer.next_is("interface") && !lexer.next_is("namespace")) || !allow_interface) {
             auto current_offset = lexer.tell();
             auto name = lexer.consume_until([](auto ch) { return is_ascii_space(ch); });
             consume_whitespace();
@@ -920,6 +953,8 @@ Interface& Parser::parse()
 
     if (lexer.consume_specific("interface"))
         parse_interface(interface);
+    else if (lexer.consume_specific("namespace"))
+        parse_namespace(interface);
 
     parse_non_interface_entities(false, interface);
 

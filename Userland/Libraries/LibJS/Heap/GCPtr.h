@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <AK/Traits.h>
 #include <AK/Types.h>
 
 namespace JS {
@@ -99,6 +100,18 @@ public:
     {
     }
 
+    GCPtr(GCPtr<T> const& other)
+        : m_ptr(other.ptr())
+    {
+    }
+
+    template<typename U>
+    GCPtr(GCPtr<U> const& other)
+    requires(IsConvertible<U*, T*>)
+        : m_ptr(other.ptr())
+    {
+    }
+
     GCPtr(NonnullGCPtr<T> const& other)
         : m_ptr(other.ptr())
     {
@@ -116,7 +129,6 @@ public:
     {
     }
 
-    GCPtr(GCPtr const&) = default;
     GCPtr& operator=(GCPtr const&) = default;
 
     template<typename U>
@@ -215,5 +227,25 @@ inline bool operator==(NonnullGCPtr<T> const& a, GCPtr<U> const& b)
 {
     return a.ptr() == b.ptr();
 }
+
+}
+
+namespace AK {
+
+template<typename T>
+struct Traits<JS::GCPtr<T>> : public GenericTraits<JS::GCPtr<T>> {
+    static unsigned hash(JS::GCPtr<T> const& value)
+    {
+        return Traits<T*>::hash(value.ptr());
+    }
+};
+
+template<typename T>
+struct Traits<JS::NonnullGCPtr<T>> : public GenericTraits<JS::NonnullGCPtr<T>> {
+    static unsigned hash(JS::NonnullGCPtr<T> const& value)
+    {
+        return Traits<T*>::hash(value.ptr());
+    }
+};
 
 }

@@ -85,7 +85,7 @@ void BlockFormattingContext::parent_context_did_dimension_child_root_box()
 
     // We can also layout absolutely positioned boxes within this BFC.
     for (auto& box : m_absolutely_positioned_boxes) {
-        auto& cb_state = m_state.get(*box.containing_block());
+        auto& cb_state = m_state.get(*box->containing_block());
         auto available_width = AvailableSize::make_definite(cb_state.content_width() + cb_state.padding_left + cb_state.padding_right);
         auto available_height = AvailableSize::make_definite(cb_state.content_height() + cb_state.padding_top + cb_state.padding_bottom);
         layout_absolutely_positioned_element(box, AvailableSpace(available_width, available_height));
@@ -785,20 +785,17 @@ void BlockFormattingContext::layout_floating_box(Box const& box, BlockContainer 
                 }
                 did_touch_preceding_float = true;
                 if (!fits_next_to_preceding_float)
-                    continue;
+                    break;
                 offset_from_edge = tentative_offset_from_edge;
                 did_place_next_to_preceding_float = true;
                 break;
             }
 
-            if (!did_touch_preceding_float) {
-                // This box does not touch another floating box, go all the way to the edge.
-                float_to_edge();
-
-                // Also, forget all previous boxes floated to this side while since they're no longer relevant.
-                side_data.clear();
-            } else if (!did_place_next_to_preceding_float) {
-                // We ran out of horizontal space on this "float line", and need to break.
+            if (!did_touch_preceding_float || !did_place_next_to_preceding_float) {
+                // One of two things happened:
+                // - This box does not touch another floating box.
+                // - We ran out of horizontal space on this "float line", and need to break.
+                // Either way, we float this box all the way to the edge.
                 float_to_edge();
                 CSSPixels lowest_margin_edge = 0;
                 for (auto const& box : side_data.current_boxes) {

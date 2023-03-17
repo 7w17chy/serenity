@@ -468,6 +468,11 @@ Tab::Tab(BrowserWindow& window)
             go_forward();
     };
 
+    view().on_new_tab = [this] {
+        auto& tab = this->window().create_new_tab(URL("about:blank"), true);
+        return tab.view().handle();
+    };
+
     view().on_close = [this] {
         on_tab_close_request(*this);
     };
@@ -603,6 +608,12 @@ void Tab::did_become_active()
 
     BookmarksBarWidget::the().on_bookmark_hover = [this](auto&, auto& url) {
         m_statusbar->set_text(url);
+    };
+
+    BookmarksBarWidget::the().on_bookmark_add = [this](auto& url) {
+        auto current_url = this->url().to_deprecated_string();
+        if (current_url == url)
+            update_bookmark_button(current_url);
     };
 
     BookmarksBarWidget::the().remove_from_parent();

@@ -49,6 +49,7 @@ public:
     explicit WebContentView(StringView webdriver_content_ipc_path);
     virtual ~WebContentView() override;
 
+    Function<String()> on_new_tab;
     Function<void()> on_close;
     Function<void(Gfx::IntPoint screen_position)> on_context_menu_request;
     Function<void(const AK::URL&, DeprecatedString const& target, unsigned modifiers)> on_link_click;
@@ -145,6 +146,7 @@ public:
     virtual DeprecatedString notify_server_did_request_cookie(Badge<WebContentClient>, const AK::URL& url, Web::Cookie::Source source) override;
     virtual void notify_server_did_set_cookie(Badge<WebContentClient>, const AK::URL& url, Web::Cookie::ParsedCookie const& cookie, Web::Cookie::Source source) override;
     virtual void notify_server_did_update_cookie(Badge<WebContentClient>, Web::Cookie::Cookie const& cookie) override;
+    virtual String notify_request_open_new_tab(Badge<WebContentClient>) override;
     virtual void notify_server_did_close_browsing_context(Badge<WebContentClient>) override;
     virtual void notify_server_did_update_resource_count(i32 count_waiting) override;
     virtual void notify_server_did_request_restore_window() override;
@@ -191,6 +193,8 @@ private:
 
     bool is_inspector_open() const;
     void close_sub_widgets();
+
+    void update_palette();
 
     qreal m_inverse_pixel_scaling_ratio { 1.0 };
     bool m_should_show_line_box_borders { false };

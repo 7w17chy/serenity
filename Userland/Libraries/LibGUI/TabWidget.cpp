@@ -591,12 +591,12 @@ Optional<size_t> TabWidget::active_tab_index() const
     return {};
 }
 
-void TabWidget::set_tab_title(Widget& tab, StringView title)
+void TabWidget::set_tab_title(Widget& tab, String title)
 {
     for (auto& t : m_tabs) {
         if (t.widget == &tab) {
             if (t.title != title) {
-                t.title = title;
+                t.title = move(title);
                 update();
             }
             return;

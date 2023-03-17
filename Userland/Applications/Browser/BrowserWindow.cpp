@@ -565,14 +565,14 @@ void BrowserWindow::set_window_title_for_tab(Tab const& tab)
     set_title(DeprecatedString::formatted("{} - Browser", title.is_empty() ? url.to_deprecated_string() : title));
 }
 
-void BrowserWindow::create_new_tab(URL url, bool activate)
+Tab& BrowserWindow::create_new_tab(URL url, bool activate)
 {
-    auto& new_tab = m_tab_widget->add_tab<Browser::Tab>("New tab", *this);
+    auto& new_tab = m_tab_widget->add_tab<Browser::Tab>("New tab"_short_string, *this);
 
     m_tab_widget->set_bar_visible(!is_fullscreen() && m_tab_widget->children().size() > 1);
 
     new_tab.on_title_change = [this, &new_tab](auto& title) {
-        m_tab_widget->set_tab_title(new_tab, title);
+        m_tab_widget->set_tab_title(new_tab, String::from_deprecated_string(title).release_value_but_fixme_should_propagate_errors());
         if (m_tab_widget->active_widget() == &new_tab)
             set_window_title_for_tab(new_tab);
     };
@@ -652,6 +652,8 @@ void BrowserWindow::create_new_tab(URL url, bool activate)
 
     if (activate)
         m_tab_widget->set_active_widget(&new_tab);
+
+    return new_tab;
 }
 
 void BrowserWindow::create_new_window(URL url)

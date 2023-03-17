@@ -37,6 +37,9 @@ static bool is_platform_object(Type const& type)
         "FileList"sv,
         "FormData"sv,
         "ImageData"sv,
+        "Instance"sv,
+        "Memory"sv,
+        "Module"sv,
         "MutationRecord"sv,
         "NamedNodeMap"sv,
         "Node"sv,
@@ -45,6 +48,7 @@ static bool is_platform_object(Type const& type)
         "ReadableStream"sv,
         "Request"sv,
         "Selection"sv,
+        "Table"sv,
         "Text"sv,
         "TextMetrics"sv,
         "URLSearchParams"sv,
@@ -58,6 +62,19 @@ static bool is_platform_object(Type const& type)
     if (types.span().contains_slow(type.name()))
         return true;
     return false;
+}
+
+// FIXME: Generate this automatically somehow.
+static bool is_javascript_builtin(Type const& type)
+{
+    // NOTE: This is a hand-curated subset of JavaScript built-in types that are actually relevant
+    // in places where this function is used. If you add IDL code and get compile errors, you
+    // might simply need to add another type here.
+    static constexpr Array types = {
+        "ArrayBuffer"sv,
+    };
+
+    return types.span().contains_slow(type.name());
 }
 
 static StringView sequence_storage_type_to_cpp_storage_type_name(SequenceStorageType sequence_storage_type)
@@ -605,9 +622,17 @@ static void generate_to_cpp(SourceGenerator& generator, ParameterType& parameter
     auto @cpp_name@ = JS::make_handle(&static_cast<JS::Promise&>(@js_name@@js_suffix@.as_object()));
 )~~~");
     } else if (parameter.type->name() == "object") {
-        scoped_generator.append(R"~~~(
+        if (optional) {
+            scoped_generator.append(R"~~~(
+    Optional<JS::Handle<JS::Object>> @cpp_name@;
+    if (!@js_name@@js_suffix@.is_undefined())
+        @cpp_name@ = JS::make_handle(TRY(@js_name@@js_suffix@.to_object(vm)));
+)~~~");
+        } else {
+            scoped_generator.append(R"~~~(
     auto @cpp_name@ = JS::make_handle(TRY(@js_name@@js_suffix@.to_object(vm)));
 )~~~");
+        }
     } else if (parameter.type->name() == "BufferSource") {
         scoped_generator.append(R"~~~(
     if (!@js_name@@js_suffix@.is_object() || !(is<JS::TypedArrayBase>(@js_name@@js_suffix@.as_object()) || is<JS::ArrayBuffer>(@js_name@@js_suffix@.as_object()) || is<JS::DataView>(@js_name@@js_suffix@.as_object())))
@@ -1514,7 +1539,10 @@ static void generate_wrap_statement(SourceGenerator& generator, DeprecatedString
     auto scoped_generator = generator.fork();
     scoped_generator.set("value", value);
     if (!libweb_interface_namespaces.span().contains_slow(type.name())) {
-        scoped_generator.set("type", type.name());
+        if (is_javascript_builtin(type))
+            scoped_generator.set("type", DeprecatedString::formatted("JS::{}", type.name()));
+        else
+            scoped_generator.set("type", type.name());
     } else {
         // e.g. Document.getSelection which returns Selection, which is in the Selection namespace.
         StringBuilder builder;
@@ -1706,12 +1734,12 @@ static void generate_wrap_statement(SourceGenerator& generator, DeprecatedString
   if (!@value@) {
       @result_expression@ JS::js_null();
   } else {
-      @result_expression@ &@value@->callback;
+      @result_expression@ @value@->callback;
   }
 )~~~");
         } else {
             scoped_generator.append(R"~~~(
-  @result_expression@ &@value@->callback;
+  @result_expression@ @value@->callback;
 )~~~");
         }
     } else if (interface.dictionaries.contains(type.name())) {
@@ -2178,7 +2206,7 @@ static void generate_prototype_or_global_mixin_declarations(IDL::Interface const
     JS_DECLARE_NATIVE_FUNCTION(@attribute.name:snakecase@_getter);
 )~~~");
 
-        if (!attribute.readonly || attribute.extended_attributes.contains("Replaceable"sv)) {
+        if (!attribute.readonly || attribute.extended_attributes.contains("Replaceable"sv) || attribute.extended_attributes.contains("PutForwards"sv)) {
             attribute_generator.append(R"~~~(
     JS_DECLARE_NATIVE_FUNCTION(@attribute.name:snakecase@_setter);
 )~~~");
@@ -2255,6 +2283,7 @@ static void generate_prototype_or_global_mixin_definitions(IDL::Interface const&
     auto is_global_interface = interface.extended_attributes.contains("Global");
     auto class_name = is_global_interface ? interface.global_mixin_class : interface.prototype_class;
     generator.set("name", interface.name);
+    generator.set("namespaced_name", interface.namespaced_name);
     generator.set("class_name", class_name);
     generator.set("fully_qualified_name", interface.fully_qualified_name);
 
@@ -2300,7 +2329,7 @@ JS::ThrowCompletionOr<void> @class_name@::initialize(JS::Realm& realm)
         attribute_generator.set("attribute.name", attribute.name);
         attribute_generator.set("attribute.getter_callback", attribute.getter_callback_name);
 
-        if (!attribute.readonly || attribute.extended_attributes.contains("Replaceable"sv))
+        if (!attribute.readonly || attribute.extended_attributes.contains("Replaceable"sv) || attribute.extended_attributes.contains("PutForwards"sv))
             attribute_generator.set("attribute.setter_callback", attribute.setter_callback_name);
         else
             attribute_generator.set("attribute.setter_callback", "nullptr");
@@ -2397,7 +2426,7 @@ JS::ThrowCompletionOr<void> @class_name@::initialize(JS::Realm& realm)
     }
 
     generator.append(R"~~~(
-    define_direct_property(*vm.well_known_symbol_to_string_tag(), MUST_OR_THROW_OOM(JS::PrimitiveString::create(vm, "@name@"sv)), JS::Attribute::Configurable);
+    define_direct_property(*vm.well_known_symbol_to_string_tag(), MUST_OR_THROW_OOM(JS::PrimitiveString::create(vm, "@namespaced_name@"sv)), JS::Attribute::Configurable);
 )~~~");
 
     if (!is_global_interface) {
@@ -2436,7 +2465,7 @@ static JS::ThrowCompletionOr<@fully_qualified_name@*> impl_from(JS::VM& vm)
 
         generator.append(R"~~~(
     if (!is<@fully_qualified_name@>(this_object))
-        return vm.throw_completion<JS::TypeError>(JS::ErrorType::NotAnObjectOfType, "@name@");
+        return vm.throw_completion<JS::TypeError>(JS::ErrorType::NotAnObjectOfType, "@namespaced_name@");
     return static_cast<@fully_qualified_name@*>(this_object);
 }
 )~~~");
@@ -2536,8 +2565,24 @@ JS_DEFINE_NATIVE_FUNCTION(@class_name@::@attribute.setter_callback@)
 {
     auto this_value = vm.this_value();
     if (!this_value.is_object() || !is<@fully_qualified_name@>(this_value.as_object()))
-        return vm.throw_completion<JS::TypeError>(JS::ErrorType::NotAnObjectOfType, "@name@");
+        return vm.throw_completion<JS::TypeError>(JS::ErrorType::NotAnObjectOfType, "@namespaced_name@");
     TRY(this_value.as_object().internal_define_own_property("@attribute.name@", JS::PropertyDescriptor { .value = vm.argument(0), .writable = true }));
+    return JS::js_undefined();
+}
+)~~~");
+        } else if (auto put_forwards_identifier = attribute.extended_attributes.get("PutForwards"sv); put_forwards_identifier.has_value()) {
+            attribute_generator.set("attribute.name", attribute.name.to_snakecase());
+            attribute_generator.set("put_forwards_identifier"sv, *put_forwards_identifier);
+
+            attribute_generator.append(R"~~~(
+JS_DEFINE_NATIVE_FUNCTION(@class_name@::@attribute.setter_callback@)
+{
+    auto* impl = TRY(impl_from(vm));
+    auto value = vm.argument(0);
+
+    auto receiver = TRY(throw_dom_exception_if_needed(vm, [&]() { return impl->@attribute.name@(); }));
+    TRY(receiver->set(JS::PropertyKey { "@put_forwards_identifier@" }, value, JS::Object::ShouldThrowExceptions::Yes));
+
     return JS::js_undefined();
 }
 )~~~");
@@ -2637,6 +2682,171 @@ JS_DEFINE_NATIVE_FUNCTION(@class_name@::values)
     }
 }
 
+void generate_namespace_header(IDL::Interface const& interface, StringBuilder& builder)
+{
+    SourceGenerator generator { builder };
+
+    generator.set("namespace_class", interface.namespace_class);
+
+    generator.append(R"~~~(
+#pragma once
+
+#include <LibJS/Runtime/Object.h>
+
+namespace Web::Bindings {
+
+class @namespace_class@ final : public JS::Object {
+    JS_OBJECT(@namespace_class@, JS::Object);
+
+public:
+    explicit @namespace_class@(JS::Realm&);
+    virtual JS::ThrowCompletionOr<void> initialize(JS::Realm&) override;
+    virtual ~@namespace_class@() override;
+
+private:
+)~~~");
+
+    if (interface.extended_attributes.contains("WithGCVistor"sv)) {
+        generator.append(R"~~~(
+    virtual void visit_edges(JS::Cell::Visitor&) override;
+)~~~");
+    }
+
+    for (auto const& overload_set : interface.overload_sets) {
+        auto function_generator = generator.fork();
+        function_generator.set("function.name:snakecase", make_input_acceptable_cpp(overload_set.key.to_snakecase()));
+        function_generator.append(R"~~~(
+    JS_DECLARE_NATIVE_FUNCTION(@function.name:snakecase@);
+)~~~");
+        if (overload_set.value.size() > 1) {
+            for (auto i = 0u; i < overload_set.value.size(); ++i) {
+                function_generator.set("overload_suffix", DeprecatedString::number(i));
+                function_generator.append(R"~~~(
+    JS_DECLARE_NATIVE_FUNCTION(@function.name:snakecase@@overload_suffix@);
+)~~~");
+            }
+        }
+    }
+
+    generator.append(R"~~~(
+};
+
+} // namespace Web::Bindings
+)~~~");
+}
+
+void generate_namespace_implementation(IDL::Interface const& interface, StringBuilder& builder)
+{
+    SourceGenerator generator { builder };
+
+    generator.set("name", interface.name);
+    generator.set("namespace_class", interface.namespace_class);
+
+    generator.append(R"~~~(
+#include <AK/Function.h>
+#include <LibIDL/Types.h>
+#include <LibJS/Runtime/ArrayBuffer.h>
+#include <LibJS/Runtime/DataView.h>
+#include <LibJS/Runtime/Error.h>
+#include <LibJS/Runtime/PrimitiveString.h>
+#include <LibJS/Runtime/TypedArray.h>
+#include <LibJS/Runtime/Value.h>
+#include <LibWeb/Bindings/@namespace_class@.h>
+#include <LibWeb/Bindings/ExceptionOrUtils.h>
+#include <LibWeb/Bindings/Intrinsics.h>
+#include <LibWeb/HTML/Window.h>
+#include <LibWeb/HTML/WindowProxy.h>
+#include <LibWeb/WebIDL/OverloadResolution.h>
+
+)~~~");
+
+    for (auto& path : interface.required_imported_paths)
+        generate_include_for(generator, path);
+
+    emit_includes_for_all_imports(interface, generator, interface.pair_iterator_types.has_value());
+
+    generator.append(R"~~~(
+// FIXME: This is a total hack until we can figure out the namespace for a given type somehow.
+using namespace Web::CSS;
+using namespace Web::DOM;
+using namespace Web::DOMParsing;
+using namespace Web::Fetch;
+using namespace Web::FileAPI;
+using namespace Web::Geometry;
+using namespace Web::HighResolutionTime;
+using namespace Web::HTML;
+using namespace Web::IntersectionObserver;
+using namespace Web::RequestIdleCallback;
+using namespace Web::ResizeObserver;
+using namespace Web::Selection;
+using namespace Web::Streams;
+using namespace Web::UIEvents;
+using namespace Web::URL;
+using namespace Web::XHR;
+using namespace Web::WebAssembly;
+using namespace Web::WebGL;
+using namespace Web::WebIDL;
+
+namespace Web::Bindings {
+
+@namespace_class@::@namespace_class@(JS::Realm& realm)
+    : Object(ConstructWithoutPrototypeTag::Tag, realm)
+{
+}
+
+@namespace_class@::~@namespace_class@()
+{
+}
+
+JS::ThrowCompletionOr<void> @namespace_class@::initialize(JS::Realm& realm)
+{
+    [[maybe_unused]] auto& vm = this->vm();
+    [[maybe_unused]] u8 default_attributes = JS::Attribute::Enumerable;
+
+    MUST_OR_THROW_OOM(Base::initialize(realm));
+
+)~~~");
+
+    // https://webidl.spec.whatwg.org/#es-operations
+    for (auto const& overload_set : interface.overload_sets) {
+        auto function_generator = generator.fork();
+        function_generator.set("function.name", overload_set.key);
+        function_generator.set("function.name:snakecase", make_input_acceptable_cpp(overload_set.key.to_snakecase()));
+        function_generator.set("function.length", DeprecatedString::number(get_shortest_function_length(overload_set.value)));
+
+        function_generator.append(R"~~~(
+    define_native_function(realm, "@function.name@", @function.name:snakecase@, @function.length@, default_attributes);
+)~~~");
+    }
+
+    generator.append(R"~~~(
+    return {};
+}
+)~~~");
+
+    if (interface.extended_attributes.contains("WithGCVistor"sv)) {
+        generator.append(R"~~~(
+void @namespace_class@::visit_edges(JS::Cell::Visitor& visitor)
+{
+    Base::visit_edges(visitor);
+    @name@::visit_edges(visitor);
+}
+)~~~");
+    }
+
+    for (auto const& function : interface.functions)
+        generate_function(generator, function, StaticFunction::Yes, interface.namespace_class, interface.name, interface);
+    for (auto const& overload_set : interface.overload_sets) {
+        if (overload_set.value.size() == 1)
+            continue;
+        generate_overload_arbiter(generator, overload_set, interface.namespace_class);
+    }
+
+    generator.append(R"~~~(
+} // namespace Web::Bindings
+)~~~");
+}
+
 void generate_constructor_header(IDL::Interface const& interface, StringBuilder& builder)
 {
     SourceGenerator generator { builder };
@@ -2692,15 +2902,18 @@ void generate_constructor_implementation(IDL::Interface const& interface, String
     SourceGenerator generator { builder };
 
     generator.set("name", interface.name);
+    generator.set("namespaced_name", interface.namespaced_name);
     generator.set("prototype_class", interface.prototype_class);
     generator.set("constructor_class", interface.constructor_class);
     generator.set("fully_qualified_name", interface.fully_qualified_name);
 
     generator.append(R"~~~(
 #include <LibJS/Heap/Heap.h>
+#include <LibJS/Runtime/ArrayBuffer.h>
+#include <LibJS/Runtime/DataView.h>
 #include <LibJS/Runtime/GlobalObject.h>
 #include <LibJS/Runtime/IteratorOperations.h>
-#include <LibJS/Runtime/ArrayBuffer.h>
+#include <LibJS/Runtime/TypedArray.h>
 #include <LibWeb/Bindings/@constructor_class@.h>
 #include <LibWeb/Bindings/@prototype_class@.h>
 #include <LibWeb/Bindings/ExceptionOrUtils.h>
@@ -2770,6 +2983,7 @@ using namespace Web::Streams;
 using namespace Web::UIEvents;
 using namespace Web::URL;
 using namespace Web::XHR;
+using namespace Web::WebAssembly;
 using namespace Web::WebGL;
 using namespace Web::WebIDL;
 
@@ -2786,7 +3000,7 @@ namespace Web::Bindings {
 
 JS::ThrowCompletionOr<JS::Value> @constructor_class@::call()
 {
-    return vm().throw_completion<JS::TypeError>(JS::ErrorType::ConstructorWithoutNew, "@name@");
+    return vm().throw_completion<JS::TypeError>(JS::ErrorType::ConstructorWithoutNew, "@namespaced_name@");
 }
 
 JS::ThrowCompletionOr<JS::NonnullGCPtr<JS::Object>> @constructor_class@::construct(FunctionObject&)
@@ -2797,7 +3011,7 @@ JS::ThrowCompletionOr<JS::NonnullGCPtr<JS::Object>> @constructor_class@::constru
         // No constructor
         generator.set("constructor.length", "0");
         generator.append(R"~~~(
-    return vm().throw_completion<JS::TypeError>(JS::ErrorType::NotAConstructor, "@name@");
+    return vm().throw_completion<JS::TypeError>(JS::ErrorType::NotAConstructor, "@namespaced_name@");
 )~~~");
     } else if (interface.constructors.size() == 1) {
         // Single constructor
@@ -2842,7 +3056,7 @@ JS::ThrowCompletionOr<void> @constructor_class@::initialize(JS::Realm& realm)
     [[maybe_unused]] u8 default_attributes = JS::Attribute::Enumerable;
 
     MUST_OR_THROW_OOM(Base::initialize(realm));
-    define_direct_property(vm.names.prototype, &ensure_web_prototype<@prototype_class@>(realm, "@name@"), 0);
+    define_direct_property(vm.names.prototype, &ensure_web_prototype<@prototype_class@>(realm, "@namespaced_name@"), 0);
     define_direct_property(vm.names.length, JS::Value(@constructor.length@), JS::Attribute::Configurable);
 
 )~~~");
@@ -2938,6 +3152,7 @@ void generate_prototype_implementation(IDL::Interface const& interface, StringBu
 #include <AK/Function.h>
 #include <LibIDL/Types.h>
 #include <LibJS/Runtime/Array.h>
+#include <LibJS/Runtime/ArrayBuffer.h>
 #include <LibJS/Runtime/DataView.h>
 #include <LibJS/Runtime/Error.h>
 #include <LibJS/Runtime/FunctionObject.h>
@@ -2993,6 +3208,7 @@ using namespace Web::UIEvents;
 using namespace Web::URL;
 using namespace Web::WebSockets;
 using namespace Web::XHR;
+using namespace Web::WebAssembly;
 using namespace Web::WebGL;
 using namespace Web::WebIDL;
 

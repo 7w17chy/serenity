@@ -5,7 +5,6 @@ set(SOURCES
     ARIA/ARIAMixin.idl
     ARIA/Roles.cpp
     Bindings/AudioConstructor.cpp
-    Bindings/CSSNamespace.cpp
     Bindings/HostDefined.cpp
     Bindings/ImageConstructor.cpp
     Bindings/Intrinsics.cpp
@@ -18,6 +17,7 @@ set(SOURCES
     Crypto/SubtleCrypto.cpp
     CSS/Angle.cpp
     CSS/Clip.cpp
+    CSS/CSS.cpp
     CSS/CSSConditionRule.cpp
     CSS/CSSGroupingRule.cpp
     CSS/CSSImportRule.cpp
@@ -283,6 +283,7 @@ set(SOURCES
     HTML/Plugin.cpp
     HTML/PluginArray.cpp
     HTML/PromiseRejectionEvent.cpp
+    HTML/RemoteBrowsingContext.cpp
     HTML/Scripting/ClassicScript.cpp
     HTML/Scripting/Environments.cpp
     HTML/Scripting/ExceptionReporter.cpp
@@ -442,17 +443,11 @@ set(SOURCES
     URL/URL.cpp
     URL/URLSearchParams.cpp
     URL/URLSearchParamsIterator.cpp
-    WebAssembly/WebAssemblyInstanceConstructor.cpp
-    WebAssembly/WebAssemblyInstanceObject.cpp
-    WebAssembly/WebAssemblyInstanceObjectPrototype.cpp
-    WebAssembly/WebAssemblyMemoryConstructor.cpp
-    WebAssembly/WebAssemblyMemoryPrototype.cpp
-    WebAssembly/WebAssemblyModuleConstructor.cpp
-    WebAssembly/WebAssemblyModuleObject.cpp
-    WebAssembly/WebAssemblyObject.cpp
-    WebAssembly/WebAssemblyTableConstructor.cpp
-    WebAssembly/WebAssemblyTableObject.cpp
-    WebAssembly/WebAssemblyTablePrototype.cpp
+    WebAssembly/Instance.cpp
+    WebAssembly/Memory.cpp
+    WebAssembly/Module.cpp
+    WebAssembly/Table.cpp
+    WebAssembly/WebAssembly.cpp
     WebDriver/Capabilities.cpp
     WebDriver/Client.cpp
     WebDriver/ElementLocationStrategies.cpp

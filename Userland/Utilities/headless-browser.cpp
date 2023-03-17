@@ -53,12 +53,9 @@ public:
 
 #if defined(AK_OS_SERENITY)
         view->m_client_state.client = TRY(WebView::WebContentClient::try_create(*view));
-
-        if (!web_driver_ipc_path.is_empty())
-            view->client().async_connect_to_webdriver(web_driver_ipc_path);
 #else
         auto candidate_web_content_paths = TRY(get_paths_for_helper_process("WebContent"sv));
-        view->m_client_state.client = TRY(view->launch_web_content_process(candidate_web_content_paths, web_driver_ipc_path));
+        view->m_client_state.client = TRY(view->launch_web_content_process(candidate_web_content_paths));
 #endif
 
         view->client().async_update_system_theme(move(theme));
@@ -66,6 +63,9 @@ public:
 
         view->client().async_set_viewport_rect({ { 0, 0 }, window_size });
         view->client().async_set_window_size(window_size);
+
+        if (!web_driver_ipc_path.is_empty())
+            view->client().async_connect_to_webdriver(web_driver_ipc_path);
 
         return view;
     }
@@ -132,6 +132,7 @@ private:
     DeprecatedString notify_server_did_request_cookie(Badge<WebView::WebContentClient>, const URL&, Web::Cookie::Source) override { return {}; }
     void notify_server_did_set_cookie(Badge<WebView::WebContentClient>, const URL&, Web::Cookie::ParsedCookie const&, Web::Cookie::Source) override { }
     void notify_server_did_update_cookie(Badge<WebView::WebContentClient>, Web::Cookie::Cookie const&) override { }
+    String notify_request_open_new_tab(Badge<WebView::WebContentClient>) override { return {}; }
     void notify_server_did_close_browsing_context(Badge<WebView::WebContentClient>) override { }
     void notify_server_did_update_resource_count(i32) override { }
     void notify_server_did_request_restore_window() override { }

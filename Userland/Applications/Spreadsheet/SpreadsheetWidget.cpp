@@ -104,7 +104,7 @@ SpreadsheetWidget::SpreadsheetWidget(GUI::Window& parent_window, Vector<NonnullR
         if (GUI::InputBox::show(window(), new_name, DeprecatedString::formatted("New name for '{}'", sheet.name()), "Rename sheet"sv) == GUI::Dialog::ExecResult::OK) {
             sheet.set_name(new_name);
             sheet.update();
-            m_tab_widget->set_tab_title(static_cast<GUI::Widget&>(*m_tab_context_menu_sheet_view), new_name);
+            m_tab_widget->set_tab_title(static_cast<GUI::Widget&>(*m_tab_context_menu_sheet_view), String::from_deprecated_string(new_name).release_value_but_fixme_should_propagate_errors());
         }
     });
     m_tab_context_menu->add_action(*m_rename_action);
@@ -333,7 +333,7 @@ void SpreadsheetWidget::clipboard_content_did_change(DeprecatedString const& mim
 void SpreadsheetWidget::setup_tabs(Vector<NonnullRefPtr<Sheet>> new_sheets)
 {
     for (auto& sheet : new_sheets) {
-        auto& new_view = m_tab_widget->add_tab<SpreadsheetView>(sheet->name(), sheet);
+        auto& new_view = m_tab_widget->add_tab<SpreadsheetView>(String::from_deprecated_string(sheet->name()).release_value_but_fixme_should_propagate_errors(), sheet);
         new_view.model()->on_cell_data_change = [&](auto& cell, auto& previous_data) {
             undo_stack().push(make<CellsUndoCommand>(cell, previous_data));
             window()->set_modified(true);

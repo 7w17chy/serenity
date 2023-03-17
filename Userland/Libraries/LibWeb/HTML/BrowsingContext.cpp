@@ -17,6 +17,7 @@
 #include <LibWeb/HTML/EventLoop/EventLoop.h>
 #include <LibWeb/HTML/HTMLAnchorElement.h>
 #include <LibWeb/HTML/HTMLInputElement.h>
+#include <LibWeb/HTML/RemoteBrowsingContext.h>
 #include <LibWeb/HTML/SandboxingFlagSet.h>
 #include <LibWeb/HTML/Scripting/WindowEnvironmentSettingsObject.h>
 #include <LibWeb/HTML/Window.h>
@@ -620,7 +621,7 @@ BrowsingContext::ChosenBrowsingContext BrowsingContext::choose_a_browsing_contex
     // a boolean noopener are as follows:
 
     // 1. Let chosen be null.
-    JS::GCPtr<BrowsingContext> chosen = nullptr;
+    JS::GCPtr<AbstractBrowsingContext> chosen = nullptr;
 
     // 2. Let windowType be "existing or none".
     auto window_type = WindowType::ExistingOrNone;
@@ -698,7 +699,8 @@ BrowsingContext::ChosenBrowsingContext BrowsingContext::choose_a_browsing_contex
 
             // 3. If noopener is true, then set chosen to the result of creating a new top-level browsing context.
             if (no_opener) {
-                chosen = HTML::BrowsingContext::create_a_new_top_level_browsing_context(*m_page);
+                auto handle = m_page->client().page_did_request_new_tab();
+                chosen = RemoteBrowsingContext::create_a_new_remote_browsing_context(handle);
             }
 
             // 4. Otherwise:
@@ -734,7 +736,7 @@ BrowsingContext::ChosenBrowsingContext BrowsingContext::choose_a_browsing_contex
     }
 
     // 9. Return chosen and windowType.
-    return { chosen, window_type };
+    return { chosen.ptr(), window_type };
 }
 
 // https://html.spec.whatwg.org/multipage/browsers.html#document-tree-child-browsing-context
